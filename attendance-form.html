@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Student Attendance Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 12px;
+      background: linear-gradient(135deg, #fff9c4 0%, #f0f8e8 100%);
+      min-height: 100vh;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+      padding: 18px 12px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    
+    .back-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    .logo {
+      max-width: 160px;
+      height: auto;
+      margin-bottom: 8px;
+      filter: brightness(1.1);
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-section {
+      animation: fadeIn 0.6s ease;
+      padding: 18px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    
+    .form-group {
+      position: relative;
+    }
+    
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .radio-group label:hover {
+      background: #e9ecef;
+    }
+    
+    .radio-group input[type="radio"] {
+      width: auto;
+      margin-right: 5px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 1rem;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 9px 11px;
+      border: 2px solid #e1e8ed;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background-color: #fafbfc;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #e67e22;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    input:valid {
+      border-color: #27ae60;
+    }
+    
+    button[type="submit"] {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    button[type="submit"]:hover:not(:disabled) {
+      background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+    }
+    
+    button[type="submit"]:active {
+      transform: translateY(0);
+    }
+    
+    button[type="submit"]:disabled {
+      background: #bdc3c7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Validation Messages */
+    .validation-message {
+      font-weight: 600;
+      margin-top: 4px;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .text-success {
+      color: green !important;
+    }
+    
+    /* Responsive Grid */
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      
+      .form-group.full-width {
+        grid-column: 1 / -1;
+      }
+    }
+    /* Message Styles */
+    .message-container {
+      padding: 0 20px 10px;
+    }
+    
+    #successAttendanceMessage, #errorMessage {
+      text-align: center;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    #successAttendanceMessage {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      color: #155724;
+      border: 2px solid #c3e6cb;
+    }
+    
+    #errorMessage {
+      background: linear-gradient(135deg, #f8d7da 0%, #f1b0b7 100%);
+      color: #721c24;
+      border: 2px solid #f1b0b7;
+    }
+    
+    #formSpinner {
+      display: none;
+      text-align: center;
+      padding: 12px;
+      font-weight: 600;
+      color: #7f8c8d;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 6px;
+      margin: 12px 20px;
+    }
+    
+    /* Loading Animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 9999;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 767px) {
+      body {
+        padding: 8px;
+      }
+      
+      .header {
+        padding: 12px 8px;
+      }
+      
+      .header h1 {
+        font-size: 1.3rem;
+      }
+      
+      .form-section {
+        padding: 15px;
+      }
+      
+      .message-container {
+        padding: 0 15px 8px;
+      }
+      
+      .radio-group {
+        flex-direction: column;
+        gap: 6px;
+      }
+      
+      .radio-group label {
+        justify-content: flex-start;
+      }
+    }
+    
+    /* Extra small screens */
+    @media (max-width: 480px) {
+      .form-section {
+        padding: 12px;
+      }
+      
+      input, select {
+        padding: 8px 10px;
+      }
+      
+      button[type="submit"] {
+        padding: 10px;
+        font-size: 1rem;
+      }
+      
+      #toast {
+        left: 8px;
+        right: 8px;
+        transform: none;
+        margin: 0 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header">
+      <button class="back-btn" onclick="goToPage('index.html')">← Back to Main</button>
+      <img src="https://i.imgur.com/Mcs8sYw.png" class="logo" alt="Discover Music School Logo">
+      <h1>Student Attendance</h1>
+    </div>
+
+    <!-- Spinner for feedback -->
+    <div id="formSpinner"><span class="spinner">⏳</span> Please wait...</div>
+
+    <!-- Attendance Section -->
+    <div class="form-section">
+      <form id="attendanceForm" onsubmit="handleAttendanceSubmit(event)" autocomplete="off">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="attCardNumber">Student Card Number</label>
+            <input type="text" id="attCardNumber" list="cardNumberList" required 
+                   oninput="validateCardNumber();" autocomplete="off"
+                   placeholder="Enter student card number">
+            <datalist id="cardNumberList"></datalist>
+            <div id="cardValidationMsg" class="validation-message" aria-live="polite"></div>
+            <div id="remainingLessons" class="validation-message" aria-live="polite"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="lessonNumber">Lesson # (1–10)</label>
+            <input type="number" id="lessonNumber" min="1" max="10" required 
+                   oninput="checkLessonDuplicateDebounced()" 
+                   onblur="checkLessonDuplicateDebounced()"
+                   placeholder="Enter lesson number">
+            <div id="lessonValidationMsg" class="validation-message" aria-live="polite"></div>
+          </div>
+          
+          <div class="form-group">
+            <label>Remarks</label>
+            <div class="radio-group">
+              <label>
+                <input type="radio" name="remarks" value="Present" required> 
+                <span>✅ Present</span>
+              </label>
+              <label>
+                <input type="radio" name="remarks" value="Forfeited"> 
+                <span>❌ Forfeited</span>
+              </label>
+              <label>
+                <input type="radio" name="remarks" value="Closed"> 
+                <span>🔒 Closed</span>
+              </label>
+              <label>
+                <input type="radio" name="remarks" value="School Forfeited"> 
+                <span>🏫 School Forfeited</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <button type="submit" id="attendanceSubmit">
+          <span>Submit Attendance</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Messages -->
+    <div class="message-container">
+      <div id="successAttendanceMessage" aria-live="polite"></div>
+      <div id="errorMessage"></div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+</body>
+
+<script>
+  // Robust navigation function with multiple backend method support
+  function goToPage(page) {
+    console.log('Navigating to:', page);
+    
+    try {
+      // Method 1: Try include function (if available)
+      if (typeof google !== 'undefined' && google.script && google.script.run && google.script.run.include) {
+        console.log('Using include method for navigation');
+        google.script.run
+          .withSuccessHandler(function(html) {
+            console.log('Include method successful');
+            document.documentElement.innerHTML = html;
+          })
+          .withFailureHandler(function(error) {
+            console.log('Include method failed:', error);
+            // Fallback to Method 2
+            tryLoadHtmlMethod(page);
+          })
+          .include(page);
+        return;
+      }
+      
+      // Method 2: Try loadHtml function (if available)
+      if (typeof google !== 'undefined' && google.script && google.script.run && google.script.run.loadHtml) {
+        console.log('Using loadHtml method for navigation');
+        tryLoadHtmlMethod(page);
+        return;
+      }
+      
+      // Method 3: Direct window location (fallback)
+      console.log('Using window.location fallback for navigation');
+      window.location.href = page;
+      
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Final fallback
+      window.location.href = page;
+    }
+  }
+  
+  function tryLoadHtmlMethod(page) {
+    google.script.run
+      .withSuccessHandler(function(html) {
+        console.log('LoadHtml method successful');
+        document.documentElement.innerHTML = html;
+      })
+      .withFailureHandler(function(error) {
+        console.log('LoadHtml method failed:', error);
+        console.log('Using window.location as final fallback');
+        window.location.href = page;
+      })
+      .loadHtml(page);
+  }
+
+  // Robust validation state flags
+  let isCardValid = false;
+  let isLessonValid = false;
+  let lessonCheckTimeout;
+
+  function loadCardSuggestions() {
+    google.script.run.withSuccessHandler(cards => {
+      const datalist = document.getElementById("cardNumberList");
+      datalist.innerHTML = "";
+      cards.forEach(card => {
+        const option = document.createElement("option");
+        option.value = card.trim().toUpperCase();
+        datalist.appendChild(option);
+      });
+    }).getCardNumbers();
+  }
+
+  function validateCardNumber() {
+    const card = document.getElementById("attCardNumber").value.trim().toUpperCase();
+    const cardMsg = document.getElementById("cardValidationMsg");
+    const lessonMsg = document.getElementById("lessonValidationMsg");
+    const remainingDisplay = document.getElementById("remainingLessons");
+
+    cardMsg.style.color = "gray";
+    cardMsg.textContent = "⏳ Checking card number...";
+    remainingDisplay.textContent = "";
+    lessonMsg.textContent = "";
+
+    document.getElementById("attendanceSubmit").disabled = true;
+    isCardValid = false;
+
+    if (!card) {
+      cardMsg.textContent = "❗ Required";
+      isCardValid = false;
+      evaluateAttendanceSubmitState();
+      return;
+    }
+
+    google.script.run.withSuccessHandler(status => {
+      if (!status.exists) {
+        cardMsg.style.color = "red";
+        cardMsg.textContent = "❌ Card number does not exist.";
+        remainingDisplay.classList.remove("text-success");
+        remainingDisplay.textContent = "";
+        lessonMsg.textContent = "";
+        isCardValid = false;
+      } else {
+        cardMsg.textContent = "";
+        remainingDisplay.classList.add("text-success");
+        remainingDisplay.textContent = `✅ Remaining Lessons: ${status.remaining} of 10`;
+        isCardValid = true;
+
+        if (status.remaining === 0) {
+          lessonMsg.textContent = "❗ This card has no remaining lessons!";
+          showToast("⚠️ This card has no remaining lessons!");
+          document.getElementById("attendanceSubmit").disabled = true;
+          isLessonValid = false;
+        } else if (status.nextLesson !== null) {
+          document.getElementById("lessonNumber").value = status.nextLesson;
+          lessonMsg.textContent = "";
+          isLessonValid = true;
+        } else {
+          lessonMsg.textContent = "❗ All 10 lessons used.";
+          isLessonValid = false;
+        }
+      }
+      evaluateAttendanceSubmitState();
+    }).withFailureHandler(err => {
+      cardMsg.style.color = "red";
+      cardMsg.textContent = "❌ Failed to check card.";
+      console.error("Validation error:", err.message);
+      isCardValid = false;
+      evaluateAttendanceSubmitState();
+    }).getCardAttendanceStatus(card);
+  }
+
+  function checkLessonDuplicate() {
+    const card = document.getElementById("attCardNumber").value.trim().toUpperCase();
+    const lesson = document.getElementById("lessonNumber").value.trim();
+    const msg = document.getElementById("lessonValidationMsg");
+
+    if (!lesson || lesson < 1 || lesson > 10) {
+      msg.textContent = "❗ Lesson # must be between 1 and 10.";
+      isLessonValid = false;
+      evaluateAttendanceSubmitState();
+      return;
+    }
+
+    google.script.run.withSuccessHandler(isUsed => {
+      if (isUsed) {
+        msg.textContent = `❗ Lesson #${lesson} already recorded.`;
+        isLessonValid = false;
+      } else {
+        msg.textContent = "";
+        isLessonValid = true;
+      }
+      evaluateAttendanceSubmitState();
+    }).isLessonUsed(card, lesson);
+  }
+
+  function checkLessonDuplicateDebounced() {
+    clearTimeout(lessonCheckTimeout);
+    lessonCheckTimeout = setTimeout(() => {
+      checkLessonDuplicate();
+    }, 300);
+  }
+
+  function evaluateAttendanceSubmitState() {
+    const cardValue = document.getElementById("attCardNumber").value.trim();
+    const lessonValue = document.getElementById("lessonNumber").value.trim();
+    document.getElementById("attendanceSubmit").disabled =
+      !(isCardValid && isLessonValid && cardValue && lessonValue);
+  }
+
+  function handleAttendanceSubmit(e) {
+    e.preventDefault();
+    showSpinner(true);
+
+    const cardInput = document.getElementById("attCardNumber");
+    const lessonInput = document.getElementById("lessonNumber");
+    const remarksInput = document.querySelector('input[name="remarks"]:checked');
+    const msgEl = document.getElementById("successAttendanceMessage");
+    const remainingDisplay = document.getElementById("remainingLessons");
+
+    const cardNumber = cardInput.value.trim().toUpperCase();
+    const lessonNumber = lessonInput.value.trim();
+    const remarks = remarksInput?.value || "";
+
+    if (!cardNumber || !lessonNumber || !remarks) {
+      msgEl.textContent = "❌ Please complete all fields.";
+      msgEl.style.color = "red";
+      msgEl.style.display = "block";
+      showSpinner(false);
+      return;
+    }
+
+    const data = { cardNumber, lessonNumber, remarks };
+
+    google.script.run.withSuccessHandler(() => {
+      msgEl.textContent = "✅ Attendance recorded!";
+      msgEl.style.color = "green";
+      msgEl.style.display = "block";
+      showSpinner(false);
+
+      // Hide after 2 seconds
+      setTimeout(() => {
+        msgEl.textContent = "";
+        msgEl.style.display = "none";
+      }, 2000);
+
+      // Reset form after 1 second
+      setTimeout(() => {
+        document.getElementById("attendanceForm").reset();
+        msgEl.textContent = "";
+        msgEl.style.display = "none";
+        document.getElementById("lessonValidationMsg").textContent = "";
+        document.getElementById("cardValidationMsg").textContent = "";
+        const remainingLessonsEl = document.getElementById("remainingLessons");
+        remainingLessonsEl.classList.remove("text-success");
+        remainingLessonsEl.textContent = "";
+        document.getElementById("attendanceSubmit").disabled = true;
+        isCardValid = false;
+        isLessonValid = false;
+      }, 1000);
+
+      // Refresh remaining lessons using same cardNumber
+      google.script.run.withSuccessHandler(status => {
+        if (status && status.exists) {
+          remainingDisplay.classList.add("text-success");
+          remainingDisplay.textContent = `✅ Remaining Lessons: ${status.remaining} of 10`;
+        } else {
+          remainingDisplay.classList.remove("text-success");
+          remainingDisplay.textContent = "";
+        }
+      }).getCardAttendanceStatus(cardNumber);
+    }).withFailureHandler(err => {
+      msgEl.textContent = "❌ Failed to record attendance.";
+      msgEl.style.color = "red";
+      msgEl.style.display = "block";
+      showSpinner(false);
+      console.error("Submit error:", err.message);
+    }).submitAttendance(data);
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.display = "block";
+    toast.style.opacity = "1";
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      setTimeout(() => toast.style.display = "none", 500);
+    }, 3000);
+  }
+
+  function showSpinner(show) {
+    document.getElementById("formSpinner").style.display = show ? "block" : "none";
+  }
+
+  // Load card suggestions when page loads
+  window.addEventListener("DOMContentLoaded", loadCardSuggestions);
+</script>
+</html>

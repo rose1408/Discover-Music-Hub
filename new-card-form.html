@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>New Student Card Enrollment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 12px;
+      background: linear-gradient(135deg, #fff9c4 0%, #f0f8e8 100%);
+      min-height: 100vh;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      padding: 18px 12px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    
+    .back-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    .logo {
+      max-width: 160px;
+      height: auto;
+      margin-bottom: 8px;
+      filter: brightness(1.1);
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-section {
+      animation: fadeIn 0.6s ease;
+      padding: 20px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+    
+    .form-group {
+      position: relative;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 1rem;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e1e8ed;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background-color: #fafbfc;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #27ae60;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    input:valid {
+      border-color: #27ae60;
+    }
+    
+    .input-with-spinner {
+      position: relative;
+    }
+    
+    #cardSpinner {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    button[type="submit"] {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    button[type="submit"]:hover:not(:disabled) {
+      background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
+    }
+    
+    button[type="submit"]:active {
+      transform: translateY(0);
+    }
+    
+    button[type="submit"]:disabled {
+      background: #bdc3c7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Responsive Grid */
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      
+      .form-group.full-width {
+        grid-column: 1 / -1;
+      }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalSlideIn 0.3s ease;
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    .modal-content p {
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      color: #2c3e50;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .modal-buttons button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      min-width: 100px;
+    }
+    
+    .modal-buttons .confirm {
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+    }
+    
+    .modal-buttons .confirm:hover {
+      background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+      transform: translateY(-1px);
+    }
+    
+    .modal-buttons .cancel {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+    }
+    
+    .modal-buttons .cancel:hover {
+      background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+      transform: translateY(-1px);
+    }
+    
+    /* Message Styles */
+    .message-container {
+      padding: 0 25px 15px;
+    }
+    
+    #successCardMessage, #errorMessage {
+      text-align: center;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 15px;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    #successCardMessage {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      color: #155724;
+      border: 2px solid #c3e6cb;
+    }
+    
+    #errorMessage {
+      background: linear-gradient(135deg, #f8d7da 0%, #f1b0b7 100%);
+      color: #721c24;
+      border: 2px solid #f1b0b7;
+    }
+    
+    #warningCard {
+      font-weight: 600;
+      margin-top: 6px;
+      padding: 6px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+    
+    #formSpinner {
+      display: none;
+      text-align: center;
+      padding: 15px;
+      font-weight: 600;
+      color: #7f8c8d;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      margin: 15px 25px;
+    }
+    
+    /* Loading Animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 767px) {
+      body {
+        padding: 8px;
+      }
+      
+      .header {
+        padding: 15px 10px;
+      }
+      
+      .header h1 {
+        font-size: 1.3rem;
+      }
+      
+      .form-section {
+        padding: 20px;
+      }
+      
+      .message-container {
+        padding: 0 20px 12px;
+      }
+      
+      .modal-content {
+        margin: 15px;
+        padding: 20px;
+      }
+      
+      .modal-buttons {
+        flex-direction: column;
+      }
+      
+      .modal-buttons button {
+        width: 100%;
+      }
+    }
+    
+    /* Extra small screens */
+    @media (max-width: 480px) {
+      .form-section {
+        padding: 15px;
+      }
+      
+      input, select {
+        padding: 10px 12px;
+      }
+      
+      button[type="submit"] {
+        padding: 12px;
+        font-size: 1rem;
+      }
+    }
+
+    /* Card Number Suggestion Styles */
+    .suggestion-tooltip {
+      background: #e3f2fd;
+      border: 1px solid #2196f3;
+      color: #1565c0;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-top: 5px;
+      display: none;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .suggestion-tooltip::before {
+      content: "💡";
+      margin-right: 8px;
+    }
+
+    .suggestion-tooltip.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .suggestion-tooltip:hover {
+      background: #bbdefb;
+      border-color: #1976d2;
+    }
+
+    .validation-message {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .validation-message.info {
+      background: #e8f5e8;
+      border: 1px solid #4caf50;
+      color: #2e7d32;
+    }
+
+    .validation-message.warning {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      color: #856404;
+    }
+
+    .validation-message.error {
+      background: #f8d7da;
+      border: 1px solid #dc3545;
+      color: #721c24;
+    }
+
+    /* Name Suggestions Dropdown */
+    .name-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+
+    .name-suggestions.show {
+      display: block;
+    }
+
+    .name-suggestion-item {
+      padding: 12px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .name-suggestion-item:hover {
+      background: #f8f9fa;
+      border-left: 3px solid #27ae60;
+    }
+
+    .name-suggestion-item.highlighted {
+      background: #e8f5e8;
+      border-left: 3px solid #27ae60;
+    }
+
+    .name-suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .no-suggestions {
+      padding: 12px 15px;
+      color: #6c757d;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    /* Enhanced Card Validation */
+    .card-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .card-status.available {
+      color: #27ae60;
+    }
+
+    .card-status.unavailable {
+      color: #e74c3c;
+    }
+
+    .card-status.checking {
+      color: #f39c12;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header">
+      <button class="back-btn" onclick="goToPage('index')">← Back to Main</button>
+      <img src="https://i.imgur.com/Mcs8sYw.png" class="logo" alt="Discover Music School Logo">
+      <h1>New Student Card Enrollment</h1>
+    </div>
+
+    <!-- Spinner for feedback -->
+    <div id="formSpinner"><span class="spinner">⏳</span> Please wait...</div>
+
+    <!-- New Card Form -->
+    <div class="form-section">
+      <form id="cardForm" onsubmit="handleCardSubmit(event)">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="studentName">Student's Full Name</label>
+            <input type="text" id="studentName" required 
+                   placeholder="Last Name, First Name Middle Name"
+                   oninput="handleNameInput()"
+                   onblur="hideNameSuggestions()"
+                   autocomplete="off">
+            <div id="nameSuggestions" class="name-suggestions"></div>
+            <div id="nameValidation" class="validation-message"></div>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="newCardNumber">Student Card Number</label>
+            <div class="input-with-spinner">
+              <input id="newCardNumber" name="newCardNumber" 
+                     oninput="handleCardNumberInput()" 
+                     onblur="hideCardSuggestions()"
+                     required
+                     autocomplete="off"
+                     placeholder="Enter unique card number">
+              <span id="cardSpinner" style="display:none;" class="spinner">⏳</span>
+            </div>
+            <div id="cardSuggestion" class="suggestion-tooltip"></div>
+            <div id="cardValidation" class="validation-message"></div>
+            <div id="warningCard"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="teacher">Teacher</label>
+            <select id="teacher" required>
+              <option value="" disabled selected>Select teacher</option>
+              <option>T'Vivian</option><option>T'Adee</option><option>T'Lester</option>
+              <option>T'Val</option><option>T'Charles</option><option>T'Dionelle</option>
+              <option>T'Christian</option><option>T'Mark</option><option>T'Shoti</option>
+              <option>T'Samantha</option><option>T'EJ</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="level">Level</label>
+            <select id="level" required>
+              <option value="" disabled selected>Select level</option>
+              <option>Preparatory</option><option>Primary</option><option>Intermediate</option><option>Advance</option>
+            </select>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="instrument">Instrument</label>
+            <select id="instrument" required>
+              <option value="" disabled selected>Select instrument</option>
+              <option>Voice</option><option>Piano</option><option>Drums</option><option>Classic Guitar</option>
+              <option>Electric Guitar</option><option>Bass Guitar</option><option>Ukulele</option><option>Violin</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit">
+          <span>Submit Enrollment</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Messages -->
+    <div class="message-container">
+      <div id="successCardMessage"></div>
+      <div id="errorMessage"></div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="cardConfirmModal" class="modal">
+    <div class="modal-content">
+      <p>📋 Confirm submission of the student card enrollment?</p>
+      <div class="modal-buttons">
+        <button class="confirm">✅ Yes, Submit</button>
+        <button class="cancel">❌ Cancel</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  // Robust navigation function with multiple backend method support
+  function goToPage(page) {
+    console.log('Navigating to:', page);
+    
+    try {
+      // Method 1: Try include function (if available)
+      if (typeof google !== 'undefined' && google.script && google.script.run && google.script.run.include) {
+        console.log('Using include method for navigation');
+        google.script.run
+          .withSuccessHandler(function(html) {
+            console.log('Include method successful');
+            document.documentElement.innerHTML = html;
+          })
+          .withFailureHandler(function(error) {
+            console.log('Include method failed:', error);
+            // Fallback to Method 2
+            tryLoadHtmlMethod(page);
+          })
+          .include(page);
+        return;
+      }
+      
+      // Method 2: Try loadHtml function (if available)
+      if (typeof google !== 'undefined' && google.script && google.script.run && google.script.run.loadHtml) {
+        console.log('Using loadHtml method for navigation');
+        tryLoadHtmlMethod(page);
+        return;
+      }
+      
+      // Method 3: Direct window location (fallback)
+      console.log('Using window.location fallback for navigation');
+      window.location.href = page + '.html';
+      
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Final fallback
+      window.location.href = page + '.html';
+    }
+  }
+  
+  function tryLoadHtmlMethod(page) {
+    google.script.run
+      .withSuccessHandler(function(html) {
+        console.log('LoadHtml method successful');
+        document.documentElement.innerHTML = html;
+      })
+      .withFailureHandler(function(error) {
+        console.log('LoadHtml method failed:', error);
+        console.log('Using window.location as final fallback');
+        window.location.href = page + '.html';
+      })
+      .loadHtml(page);
+  }
+
+  let checkTimeout;
+  let nameCheckTimeout;
+  let cardAvailable = false;
+  let modalInUse = false;
+  let studentNames = [];
+  let currentNameIndex = -1;
+
+  // Load student names on page load
+  window.addEventListener("DOMContentLoaded", () => {
+    loadStudentNames();
+  });
+
+  function loadStudentNames() {
+    try {
+      google.script.run
+        .withSuccessHandler(names => {
+          console.log('Loaded student names:', names);
+          studentNames = names || [];
+        })
+        .withFailureHandler(err => {
+          console.log('Could not load student names:', err);
+          studentNames = [];
+        })
+        .getStudentNames();
+    } catch (e) {
+      console.log('Student names loading not available:', e);
+      studentNames = [];
+    }
+  }
+
+  // Handle name input with suggestions
+  function handleNameInput() {
+    clearTimeout(nameCheckTimeout);
+    const input = document.getElementById('studentName');
+    const query = input.value.trim().toLowerCase();
+    
+    nameCheckTimeout = setTimeout(() => {
+      if (query.length < 2) {
+        hideNameSuggestions();
+        return;
+      }
+      
+      showNameSuggestions(query);
+    }, 300);
+  }
+
+  function showNameSuggestions(query) {
+    const suggestionsDiv = document.getElementById('nameSuggestions');
+    const validationDiv = document.getElementById('nameValidation');
+    
+    // Filter student names based on query
+    const filteredNames = studentNames.filter(name => 
+      name.toLowerCase().includes(query)
+    );
+    
+    if (filteredNames.length === 0) {
+      suggestionsDiv.innerHTML = '<div class="no-suggestions">No matching names found</div>';
+    } else {
+      suggestionsDiv.innerHTML = filteredNames.map(name => 
+        `<div class="name-suggestion-item" onclick="selectName('${name}')">${name}</div>`
+      ).join('');
+    }
+    
+    suggestionsDiv.classList.add('show');
+    currentNameIndex = -1;
+    
+    // Show validation message if exact match exists
+    const exactMatch = studentNames.find(name => 
+      name.toLowerCase() === query
+    );
+    
+    if (exactMatch) {
+      validationDiv.textContent = '✅ Student found in database';
+      validationDiv.className = 'validation-message info';
+      validationDiv.style.display = 'block';
+    } else {
+      validationDiv.style.display = 'none';
+    }
+  }
+
+  function selectName(name) {
+    document.getElementById('studentName').value = name;
+    hideNameSuggestions();
+    
+    // Show confirmation that student exists
+    const validationDiv = document.getElementById('nameValidation');
+    validationDiv.textContent = '✅ Existing student selected';
+    validationDiv.className = 'validation-message info';
+    validationDiv.style.display = 'block';
+  }
+
+  function hideNameSuggestions() {
+    setTimeout(() => {
+      document.getElementById('nameSuggestions').classList.remove('show');
+    }, 200);
+  }
+
+  // Handle card number input with real-time validation
+  function handleCardNumberInput() {
+    clearTimeout(checkTimeout);
+    const input = document.getElementById('newCardNumber');
+    const cardNumber = input.value.trim();
+    const validationDiv = document.getElementById('cardValidation');
+    const warningEl = document.getElementById('warningCard');
+    const spinner = document.getElementById('cardSpinner');
+    
+    // Clear previous messages
+    validationDiv.style.display = 'none';
+    warningEl.textContent = '';
+    cardAvailable = false;
+    toggleCardSubmit(true);
+    
+    if (!cardNumber) {
+      spinner.style.display = 'none';
+      return;
+    }
+    
+    // Show checking status
+    spinner.style.display = 'inline-block';
+    validationDiv.textContent = '🔄 Checking availability...';
+    validationDiv.className = 'validation-message warning';
+    validationDiv.style.display = 'block';
+    
+    // Debounce the check
+    checkTimeout = setTimeout(() => {
+      checkCardAvailability(cardNumber);
+    }, 800);
+  }
+
+  function checkCardAvailability(cardNumber) {
+    const validationDiv = document.getElementById('cardValidation');
+    const warningEl = document.getElementById('warningCard');
+    const spinner = document.getElementById('cardSpinner');
+    
+    try {
+      google.script.run
+        .withSuccessHandler(isDuplicate => {
+          spinner.style.display = 'none';
+          
+          if (isDuplicate) {
+            // Card exists - not available
+            validationDiv.textContent = '❌ Card number already exists';
+            validationDiv.className = 'validation-message error';
+            validationDiv.style.display = 'block';
+            
+            warningEl.innerHTML = '<div class="card-status unavailable">❗ Card number already taken</div>';
+            cardAvailable = false;
+            toggleCardSubmit(true);
+          } else {
+            // Card is available
+            validationDiv.textContent = '✅ Card number is available';
+            validationDiv.className = 'validation-message info';
+            validationDiv.style.display = 'block';
+            
+            warningEl.innerHTML = '<div class="card-status available">✅ Available for use</div>';
+            cardAvailable = true;
+            toggleCardSubmit(false);
+          }
+        })
+        .withFailureHandler(err => {
+          spinner.style.display = 'none';
+          console.error('Card validation error:', err);
+          
+          validationDiv.textContent = '⚠️ Could not verify card number';
+          validationDiv.className = 'validation-message warning';
+          validationDiv.style.display = 'block';
+          
+          warningEl.innerHTML = '<div class="card-status checking">⚠️ Validation unavailable</div>';
+          cardAvailable = true; // Allow submission if validation fails
+          toggleCardSubmit(false);
+        })
+        .checkCardNumber(cardNumber);
+    } catch (e) {
+      spinner.style.display = 'none';
+      console.error('Card check exception:', e);
+      
+      validationDiv.textContent = '⚠️ Validation service unavailable';
+      validationDiv.className = 'validation-message warning';
+      validationDiv.style.display = 'block';
+      
+      cardAvailable = true; // Allow submission if validation fails
+      toggleCardSubmit(false);
+    }
+  }
+
+  function hideCardSuggestions() {
+    // This can be used for future card suggestion features
+  }
+
+  // Handle keyboard navigation for name suggestions
+  document.getElementById('studentName').addEventListener('keydown', function(e) {
+    const suggestions = document.querySelectorAll('.name-suggestion-item');
+    
+    if (suggestions.length === 0) return;
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      currentNameIndex = Math.min(currentNameIndex + 1, suggestions.length - 1);
+      updateHighlight(suggestions);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      currentNameIndex = Math.max(currentNameIndex - 1, -1);
+      updateHighlight(suggestions);
+    } else if (e.key === 'Enter' && currentNameIndex >= 0) {
+      e.preventDefault();
+      suggestions[currentNameIndex].click();
+    } else if (e.key === 'Escape') {
+      hideNameSuggestions();
+    }
+  });
+
+  function updateHighlight(suggestions) {
+    suggestions.forEach((item, index) => {
+      if (index === currentNameIndex) {
+        item.classList.add('highlighted');
+      } else {
+        item.classList.remove('highlighted');
+      }
+    });
+  }
+
+  function handleCardSubmit(e) {
+    e.preventDefault();
+
+    if (!cardAvailable) {
+      document.getElementById("errorMessage").textContent = "❌ Please ensure the card number is available before submitting.";
+      return false;
+    }
+
+    const data = {
+      studentName: document.getElementById("studentName").value.trim(),
+      cardNumber: document.getElementById("newCardNumber").value.trim(),
+      teacher: document.getElementById("teacher").value,
+      level: document.getElementById("level").value,
+      instrument: document.getElementById("instrument").value
+    };
+
+    showModal("cardConfirmModal", () => submitCardForm(data));
+  }
+
+  function submitCardForm() {
+    showSpinner(true);
+    const data = {
+      studentName: document.getElementById("studentName").value.trim(),
+      cardNumber: document.getElementById("newCardNumber").value.trim(),
+      teacher: document.getElementById("teacher").value,
+      level: document.getElementById("level").value,
+      instrument: document.getElementById("instrument").value
+    };
+
+    try {
+      google.script.run.withSuccessHandler(() => {
+        document.getElementById("cardForm").reset();
+        document.getElementById("successCardMessage").textContent = "✅ Card Enrollment Submitted!";
+        document.getElementById("warningCard").textContent = "";
+        document.getElementById("cardValidation").style.display = "none";
+        document.getElementById("nameValidation").style.display = "none";
+        document.getElementById("errorMessage").textContent = "";
+        toggleCardSubmit(true);
+        cardAvailable = false;
+        showSpinner(false);
+      }).withFailureHandler(err => {
+        const msg = err.message || "❌ Failed to submit card.";
+        document.getElementById("errorMessage").textContent = "❌ " + msg;
+        showSpinner(false);
+      }).submitCardForm(data);
+    } catch (e) {
+      document.getElementById("errorMessage").textContent = "❌ Submission failed. Please try again.";
+      showSpinner(false);
+    }
+  }
+
+  function toggleCardSubmit(disabled) {
+    const cardFormSubmitBtn = document.querySelector('#cardForm button[type="submit"]');
+    if (cardFormSubmitBtn) {
+      cardFormSubmitBtn.disabled = disabled;
+    }
+  }
+
+  function showModal(modalId, confirmCallback) {
+    if (modalInUse) return;
+    modalInUse = true;
+    const modal = document.getElementById(modalId);
+    modal.style.display = "flex";
+    const confirmBtn = modal.querySelector(".confirm");
+    const cancelBtn = modal.querySelector(".cancel");
+
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+
+    newBtn.onclick = () => {
+      modal.style.display = "none";
+      modalInUse = false;
+      confirmCallback();
+    };
+    cancelBtn.onclick = () => {
+      modal.style.display = "none";
+      modalInUse = false;
+    };
+  }
+
+  function showSpinner(show) {
+    document.getElementById("formSpinner").style.display = show ? "block" : "none";
+  }
+</script>
+</script>
+</html>

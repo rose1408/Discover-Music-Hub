@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Discover Music School - Reports Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 15px;
+      font-size: 0.95rem;
+    }
+    
+    .main-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      animation: slideIn 0.8s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      padding: 20px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    
+    .back-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    .logo {
+      max-width: 150px;
+      height: auto;
+      margin-bottom: 10px;
+      filter: brightness(1.2);
+    }
+    
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 400;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+    
+    .header p {
+      font-size: 1rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+    
+    /* Date Filter Section */
+    .filter-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .filter-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .filter-group label {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 0.95rem;
+    }
+    
+    .filter-group input[type="date"] {
+      padding: 8px 12px;
+      border: 2px solid #e1e8ed;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      background: white;
+      transition: all 0.3s ease;
+    }
+    
+    .filter-group input[type="date"]:focus {
+      outline: none;
+      border-color: #2c3e50;
+      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+    }
+    
+    .filter-btn {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .filter-btn:hover {
+      background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+    }
+    
+    /* Summary Cards */
+    .summary-section {
+      padding: 25px 20px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-top: 4px solid #3498db;
+      transition: all 0.3s ease;
+    }
+    
+    .summary-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .summary-card.students { border-top-color: #3498db; }
+    .summary-card.cards { border-top-color: #27ae60; }
+    .summary-card.tuition { border-top-color: #e74c3c; }
+    .summary-card.active { border-top-color: #f39c12; }
+    .summary-card.inactive { border-top-color: #95a5a6; }
+    .summary-card.promos { border-top-color: #9b59b6; }
+    .summary-card.instruments { border-top-color: #1abc9c; }
+    .summary-card.teachers { border-top-color: #34495e; }
+    
+    .summary-card h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #2c3e50;
+    }
+    
+    .summary-card p {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+      font-weight: 500;
+    }
+    
+    .summary-card .icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    /* Reports Section */
+    .reports-section {
+      padding: 25px 20px;
+    }
+    
+    .reports-nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+      background: #f8f9fa;
+      border: 2px solid #e1e8ed;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      color: #2c3e50;
+    }
+    
+    .tab-btn:hover {
+      background: #e9ecef;
+      border-color: #2c3e50;
+    }
+    
+    .tab-btn.active {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      border-color: #2c3e50;
+    }
+    
+    .report-content {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .report-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      font-size: 0.85rem;
+    }
+    
+    thead {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+    }
+    
+    th, td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    th {
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #fdfdfd;
+    }
+    
+    /* Status badges */
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    
+    .status-present { background: #d4edda; color: #155724; }
+    .status-forfeited { background: #f8d7da; color: #721c24; }
+    .status-closed { background: #fff3cd; color: #856404; }
+    .status-school-forfeited { background: #d1ecf1; color: #0c5460; }
+    
+    /* Loading and Empty States */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+    }
+    
+    .empty-state .icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+      opacity: 0.5;
+    }
+    
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+      font-size: 1.5rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      
+      .header {
+        padding: 15px;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .filter-section {
+        padding: 15px;
+      }
+      
+      .filter-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filter-group {
+        justify-content: space-between;
+      }
+      
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      
+      .reports-nav {
+        flex-direction: column;
+      }
+      
+      .tab-btn {
+        padding: 10px 15px;
+      }
+      
+      th, td {
+        padding: 8px 6px;
+        font-size: 0.8rem;
+      }
+      
+      th {
+        font-size: 0.75rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .summary-card {
+        padding: 15px;
+      }
+      
+      .summary-card h3 {
+        font-size: 1.8rem;
+      }
+      
+      th, td {
+        padding: 6px 4px;
+        font-size: 0.75rem;
+      }
+    }
+    
+    /* Export button */
+    .export-btn {
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+    }
+    
+    .export-btn:hover {
+      background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Header Section -->
+    <div class="header">
+      <button class="back-btn" onclick="handleGoToPage('index.html')">← Back to Main</button>
+      <img src="https://i.imgur.com/Mcs8sYw.png" class="logo" alt="Discover Music School Logo">
+      <h1>Reports Dashboard</h1>
+      <p>Student Management Analytics</p>
+    </div>
+
+    <!-- Date Filter Section -->
+    <div class="filter-section">
+      <div class="filter-container">
+        <div class="filter-group">
+          <label for="fromDate">From Date:</label>
+          <input type="date" id="fromDate" min="2024-01-01" max="2030-12-31">
+        </div>
+        <div class="filter-group">
+          <label for="toDate">To Date:</label>
+          <input type="date" id="toDate" min="2024-01-01" max="2030-12-31">
+        </div>
+        <button class="filter-btn" onclick="handleApplyFilter()">
+          📊 Generate Report
+        </button>
+        <button class="filter-btn" onclick="handleResetFilter()" style="background: #6c757d;">
+          🔄 Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary-section">
+      <div class="summary-grid">
+        <div class="summary-card students">
+          <span class="icon">👤</span>
+          <h3 id="totalStudents">-</h3>
+          <p>New Students</p>
+        </div>
+        <div class="summary-card active">
+          <span class="icon">✅</span>
+          <h3 id="activeStudents">-</h3>
+          <p>Active Students</p>
+        </div>
+        <div class="summary-card inactive">
+          <span class="icon">💤</span>
+          <h3 id="inactiveStudents">-</h3>
+          <p>Inactive Students</p>
+        </div>
+        <div class="summary-card cards">
+          <span class="icon">💳</span>
+          <h3 id="totalCards">-</h3>
+          <p>Total Card Purchases</p>
+        </div>
+        <div class="summary-card tuition">
+          <span class="icon">💰</span>
+          <h3 id="totalTuition">-</h3>
+          <p>Total Tuition Fee</p>
+        </div>
+        <div class="summary-card teachers">
+          <span class="icon">👩‍🏫</span>
+          <h3 id="totalLessons">-</h3>
+          <p>Total Lessons</p>
+        </div>
+        <div class="summary-card promos">
+          <span class="icon">🎟️</span>
+          <h3 id="totalPromos">-</h3>
+          <p>Promo Types Used</p>
+        </div>
+        <div class="summary-card instruments">
+          <span class="icon">🎵</span>
+          <h3 id="totalInstruments">-</h3>
+          <p>Instrument Types</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports Navigation -->
+    <div class="reports-section">
+      <div class="reports-nav">
+        <button class="tab-btn active" onclick="handleShowReport('teachers', event)">👩‍🏫 Lessons per Teacher</button>
+        <button class="tab-btn" onclick="handleShowReport('promos', event)">🎟️ Promo Types</button>
+        <button class="tab-btn" onclick="handleShowReport('instruments', event)">🎵 Instruments</button>
+        <button class="tab-btn" onclick="handleShowReport('students', event)">👤 Students</button>
+        <button class="tab-btn" onclick="handleShowReport('cards', event)">💳 Cards</button>
+        <button class="tab-btn" onclick="handleShowReport('attendance', event)">📋 Attendance</button>
+      </div>
+
+      <!-- Lessons per Teacher Report -->
+      <div id="teachersReport" class="report-content active">
+        <button class="export-btn" onclick="handleExportTable('teachersTable', 'Lessons_per_Teacher')">📥 Export CSV</button>
+        <div class="table-container">
+          <table id="teachersTable">
+            <thead>
+              <tr>
+                <th>Teacher</th>
+                <th>Present</th>
+                <th>Forfeited</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="teachersTableBody">
+              <tr>
+                <td colspan="4" class="loading">
+                  <span class="spinner">⏳</span> Loading teachers data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Promo Types Report -->
+      <div id="promosReport" class="report-content">
+        <button class="export-btn" onclick="handleExportTable('promosTable', 'Promo_Types')">📥 Export CSV</button>
+        <div class="table-container">
+          <table id="promosTable">
+            <thead>
+              <tr>
+                <th>Promo Type</th>
+                <th>Count</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody id="promosTableBody">
+              <tr>
+                <td colspan="3" class="loading">
+                  <span class="spinner">⏳</span> Loading promo data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Instruments Report -->
+      <div id="instrumentsReport" class="report-content">
+        <button class="export-btn" onclick="handleExportTable('instrumentsTable', 'Instruments')">📥 Export CSV</button>
+        <div class="table-container">
+          <table id="instrumentsTable">
+            <thead>
+              <tr>
+                <th>Instrument</th>
+                <th>Count</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody id="instrumentsTableBody">
+              <tr>
+                <td colspan="3" class="loading">
+                  <span class="spinner">⏳</span> Loading instruments data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Students Report -->
+      <div id="studentsReport" class="report-content active">
+        <button class="export-btn" onclick="handleExportTable('studentsTable', 'Students_Report')">📥 Export CSV</button>
+        <div class="table-container">
+          <table id="studentsTable">
+            <thead>
+              <tr>
+                <th>Date Registered</th>
+                <th>Full Name</th>
+                <th>Age</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Emergency Contact</th>
+                <th>Social Media Consent</th>
+                <th>Referral Source</th>
+                <th>Referral Details</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <tr>
+                <td colspan="9" class="loading">
+                  <span class="spinner">⏳</span> Loading students data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cards Report -->
+      <div id="cardsReport" class="report-content">
+        <button class="export-btn" onclick="handleExportTable('cardsTable', 'Cards_Report')">📥 Export CSV</button>
+        <div class="table-container">
+          <table id="cardsTable">
+            <thead>
+              <tr>
+                <th>Date Issued</th>
+                <th>Card Number</th>
+                <th>Student Name</th>
+                <th>Teacher</th>
+                <th>Level</th>
+                <th>Instrument</th>
+                <th>Promo Type</th>
+                <th>Monthly Fee</th>
+                <th>Total Fee</th>
+              </tr>
+            </thead>
+            <tbody id="cardsTableBody">
+              <tr>
+                <td colspan="9" class="loading">
+                  <span class="spinner">⏳</span> Loading cards data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Attendance Report -->
+      <div id="attendanceReport" class="report-content">
+        <button class="export-btn" onclick="handleExportTable('attendanceTable', 'Attendance_Report')">📥 Export CSV</button>
+        <div class="table-container">
+          <table id="attendanceTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Card Number</th>
+                <th>Student Name</th>
+                <th>Lesson #</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <tr>
+                <td colspan="5" class="loading">
+                  <span class="spinner">⏳</span> Loading attendance data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Referrals Analysis Report -->
+      <div id="referralsReport" class="report-content">
+        <button class="export-btn" onclick="handleExportTable('referralsTable', 'Referrals_Report')">📥 Export CSV</button>
+        <div class="table-container">
+          <table id="referralsTable">
+            <thead>
+              <tr>
+                <th>Referral Source</th>
+                <th>Referral Details</th>
+                <th>Count</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody id="referralsTableBody">
+              <tr>
+                <td colspan="4" class="loading">
+                  <span class="spinner">⏳</span> Loading referrals data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === BULLETPROOF SCRIPT FOR GOOGLE APPS SCRIPT ===
+    console.log('🚀 Script starting...');
+    
+    // Define functions in multiple ways to ensure they work
+    function createGlobalFunction(name, func) {
+      try {
+        window[name] = func;
+        globalThis[name] = func;
+        eval(`${name} = func;`);
+        console.log(`✅ ${name} created successfully`);
+      } catch (e) {
+        console.error(`❌ Failed to create ${name}:`, e);
+      }
+    }
+    
+    // === APPLY FILTER FUNCTION ===
+    const applyFilterFunction = function() {
+      console.log('🔍 Apply Filter Called');
+      
+      const fromDate = document.getElementById('fromDate');
+      const toDate = document.getElementById('toDate');
+      
+      if (!fromDate || !toDate) {
+        alert('Date inputs not found!');
+        return;
+      }
+      
+      if (!fromDate.value || !toDate.value) {
+        alert('Please select both from and to dates');
+        return;
+      }
+      
+      if (fromDate.value > toDate.value) {
+        alert('From date cannot be later than to date');
+        return;
+      }
+      
+      console.log('📅 Date range:', fromDate.value, 'to', toDate.value);
+      
+      // Show loading
+      const generateBtn = document.querySelector('.filter-btn');
+      if (generateBtn) {
+        generateBtn.textContent = '⏳ Loading...';
+        generateBtn.disabled = true;
+        setTimeout(() => {
+          generateBtn.textContent = '📊 Generate Report';
+          generateBtn.disabled = false;
+        }, 2000);
+      }
+      
+      // Load demo data (replace with real backend call)
+      loadDemoData(fromDate.value, toDate.value);
+    };
+    
+    // === GO TO PAGE FUNCTION ===
+    const goToPageFunction = function(page) {
+      console.log('🔗 Navigate to:', page);
+      
+      try {
+        if (typeof google !== 'undefined' && google.script && google.script.run.include) {
+          google.script.run
+            .withSuccessHandler(function(html) {
+              document.documentElement.innerHTML = html;
+            })
+            .withFailureHandler(function() {
+              window.location.href = page;
+            })
+            .include(page);
+        } else {
+          window.location.href = page;
+        }
+      } catch (error) {
+        console.error('Navigation error:', error);
+        window.location.href = page;
+      }
+    };
+    
+    // === DEMO DATA LOADER ===
+    function loadDemoData(fromDate, toDate) {
+      console.log('📊 Loading demo data...');
+      
+      // Update summary cards
+      setTimeout(() => {
+        document.querySelectorAll('.card-value')[0].textContent = '156';
+        document.querySelectorAll('.card-value')[1].textContent = '142';
+        document.querySelectorAll('.card-value')[2].textContent = '14';
+        document.querySelectorAll('.card-value')[3].textContent = '91.0%';
+        document.querySelectorAll('.card-value')[4].textContent = '₹45,000';
+        document.querySelectorAll('.card-value')[5].textContent = '₹38,500';
+        document.querySelectorAll('.card-value')[6].textContent = '₹6,500';
+        
+        console.log('✅ Demo data loaded');
+      }, 500);
+    }
+    
+    // === CREATE ALL GLOBAL FUNCTIONS ===
+    createGlobalFunction('applyFilter', applyFilterFunction);
+    createGlobalFunction('handleApplyFilter', applyFilterFunction);
+    createGlobalFunction('goToPage', goToPageFunction);
+    createGlobalFunction('handleGoToPage', goToPageFunction);
+    
+    // Simple functions for other buttons
+    createGlobalFunction('resetFilter', function() {
+      console.log('🔄 Reset Filter');
+      const today = new Date();
+      const monthAgo = new Date(today);
+      monthAgo.setDate(today.getDate() - 30);
+      
+      document.getElementById('fromDate').value = monthAgo.toISOString().split('T')[0];
+      document.getElementById('toDate').value = today.toISOString().split('T')[0];
+      
+      applyFilterFunction();
+    });
+    
+    createGlobalFunction('handleResetFilter', window.resetFilter);
+    
+    createGlobalFunction('showReport', function(type, event) {
+      console.log('📋 Show Report:', type);
+      // Simple tab switching logic here
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      if (event && event.target) event.target.classList.add('active');
+      
+      document.querySelectorAll('.report-content').forEach(content => content.classList.remove('active'));
+      const target = document.getElementById(type + 'Report');
+      if (target) target.classList.add('active');
+    });
+    
+    createGlobalFunction('handleShowReport', window.showReport);
+    
+    createGlobalFunction('exportTable', function(tableId, filename) {
+      console.log('💾 Export Table:', tableId);
+      alert(`Export feature for ${filename} - Demo Mode`);
+    });
+    
+    createGlobalFunction('handleExportTable', window.exportTable);
+    
+    // === INITIALIZE PAGE ===
+    function initPage() {
+      console.log('🎯 Initializing page...');
+      
+      // Set default dates
+      const today = new Date();
+      const monthAgo = new Date(today);
+      monthAgo.setDate(today.getDate() - 30);
+      
+      const fromInput = document.getElementById('fromDate');
+      const toInput = document.getElementById('toDate');
+      
+      if (fromInput && toInput) {
+        fromInput.value = monthAgo.toISOString().split('T')[0];
+        toInput.value = today.toISOString().split('T')[0];
+        console.log('✅ Default dates set');
+      }
+      
+      // Show first tab
+      const firstTab = document.querySelector('.tab-btn');
+      if (firstTab) {
+        firstTab.click();
+      }
+      
+      console.log('🎉 Page initialized successfully!');
+    }
+    
+    // === RUN WHEN DOM IS READY ===
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPage);
+    } else {
+      initPage();
+    }
+    
+    // === VERIFICATION ===
+    setTimeout(() => {
+      console.log('🔍 Final verification:');
+      console.log('- applyFilter:', typeof applyFilter);
+      console.log('- goToPage:', typeof goToPage);
+      console.log('- window.applyFilter:', typeof window.applyFilter);
+      console.log('- window.goToPage:', typeof window.goToPage);
+      
+      // Test function call
+      try {
+        if (typeof applyFilter === 'function') {
+          console.log('✅ Functions are callable');
+        }
+      } catch (e) {
+        console.error('❌ Function test failed:', e);
+      }
+    }, 1000);
+    
+    console.log('✅ Script completed successfully!');
+  </script>
+</body>
+</html>
+      google.script.run
+        .withSuccessHandler(function(html) {
+          console.log('LoadHtml method successful');
+          document.documentElement.innerHTML = html;
+        })
+        .withFailureHandler(function(error) {
+          console.log('LoadHtml method failed:', error);
+          console.log('Using window.location as final fallback');
+          window.location.href = page;
+        })
+        .loadHtml(page);
+    }
+
+    let currentData = {
+      students: [],
+      cards: [],
+      attendance: [],
+      referrals: [],
+      teachers: [],
+      promos: [],
+      instruments: []
+    };
+
+    // Global safety function to ensure currentData is never null
+    function ensureCurrentDataValid() {
+      if (!currentData || typeof currentData !== 'object') {
+        console.warn('Resetting currentData to valid structure');
+        currentData = {
+          students: [],
+          cards: [],
+          attendance: [],
+          referrals: [],
+          teachers: [],
+          promos: [],
+          instruments: []
+        };
+      }
+      
+      // Additional safety check - ensure each property exists
+      if (!currentData.students) currentData.students = [];
+      if (!currentData.cards) currentData.cards = [];
+      if (!currentData.attendance) currentData.attendance = [];
+      if (!currentData.referrals) currentData.referrals = [];
+      if (!currentData.teachers) currentData.teachers = [];
+      if (!currentData.promos) currentData.promos = [];
+      if (!currentData.instruments) currentData.instruments = [];
+      
+      return currentData;
+    }
+
+    // Override any attempt to set currentData to null
+    Object.defineProperty(window, 'currentData', {
+      get: function() {
+        return window._currentData || {
+          students: [],
+          cards: [],
+          attendance: [],
+          referrals: [],
+          teachers: [],
+          promos: [],
+          instruments: []
+        };
+      },
+      set: function(value) {
+        if (!value || typeof value !== 'object') {
+          console.warn('Attempted to set currentData to null/invalid, using safe default');
+          window._currentData = {
+            students: [],
+            cards: [],
+            attendance: [],
+            referrals: [],
+            teachers: [],
+            promos: [],
+            instruments: []
+          };
+        } else {
+          window._currentData = {
+            students: value.students || [],
+            cards: value.cards || [],
+            attendance: value.attendance || [],
+            referrals: value.referrals || [],
+            teachers: value.teachers || [],
+            promos: value.promos || [],
+            instruments: value.instruments || []
+          };
+        }
+      }
+    });
+
+    // Initialize with safe data
+    currentData = {
+      students: [],
+      cards: [],
+      attendance: [],
+      referrals: [],
+      teachers: [],
+      promos: [],
+      instruments: []
+    };
+
+    // Initialize page
+    window.addEventListener('DOMContentLoaded', function() {
+      console.log('=== REPORTS PAGE LOADED ===');
+      console.log('Google Apps Script available:', typeof google !== 'undefined');
+      
+      if (typeof google !== 'undefined') {
+        console.log('Google script object:', google.script);
+        console.log('Google script run:', google.script ? google.script.run : 'undefined');
+        if (google.script && google.script.run) {
+          console.log('Available backend functions:', Object.keys(google.script.run));
+        }
+      }
+      
+      // Set default dates (last 30 days)
+      const today = new Date();
+      const thirtyDaysAgo = new Date(today);
+      thirtyDaysAgo.setDate(today.getDate() - 30);
+      
+      const fromDateFormatted = formatDate(thirtyDaysAgo);
+      const toDateFormatted = formatDate(today);
+      
+      console.log('Setting default dates:', { from: fromDateFormatted, to: toDateFormatted });
+      
+      document.getElementById('fromDate').value = fromDateFormatted;
+      document.getElementById('toDate').value = toDateFormatted;
+      
+      // Load initial data
+      console.log('Loading initial data...');
+      
+      // Only load demo data if not in Google Apps Script environment
+      if (typeof google === 'undefined' || !google.script || !google.script.run) {
+        console.log('Not in Google Apps Script environment, loading demo data...');
+        loadDemoDataInstant();
+      }
+      
+      // Don't call applyFilter here - let user generate report manually
+    });
+
+    function formatDate(date) {
+      return date.toISOString().split('T')[0];
+    }
+
+    // NOTE: Removed old compatibility functions - using handle* functions directly now
+
+    function showLoading() {
+      // Reset summary cards
+      document.getElementById('totalStudents').textContent = '-';
+      document.getElementById('activeStudents').textContent = '-';
+      document.getElementById('inactiveStudents').textContent = '-';
+      document.getElementById('totalCards').textContent = '-';
+      document.getElementById('totalTuition').textContent = '-';
+      document.getElementById('totalLessons').textContent = '-';
+      document.getElementById('totalPromos').textContent = '-';
+      document.getElementById('totalInstruments').textContent = '-';
+      
+      // Show loading in tables
+      const loadingRow = '<tr><td colspan="100%" class="loading"><span class="spinner">⏳</span> Loading data...</td></tr>';
+      document.getElementById('teachersTableBody').innerHTML = loadingRow;
+      document.getElementById('promosTableBody').innerHTML = loadingRow;
+      document.getElementById('instrumentsTableBody').innerHTML = loadingRow;
+      document.getElementById('studentsTableBody').innerHTML = loadingRow;
+      document.getElementById('cardsTableBody').innerHTML = loadingRow;
+      document.getElementById('attendanceTableBody').innerHTML = loadingRow;
+      document.getElementById('referralsTableBody').innerHTML = loadingRow;
+    }
+
+    function loadReportData(fromDate, toDate) {
+      console.log('=== DEBUGGING REPORT DATA LOADING ===');
+      console.log('From Date:', fromDate);
+      console.log('To Date:', toDate);
+      
+      // Check if Google Apps Script is available
+      if (typeof google === 'undefined' || !google.script || !google.script.run) {
+        console.error('Google Apps Script not available');
+        console.log('Current environment:', {
+          google: typeof google,
+          script: typeof google !== 'undefined' ? typeof google.script : 'undefined',
+          run: typeof google !== 'undefined' && google.script ? typeof google.script.run : 'undefined'
+        });
+        console.log('Loading demo data as fallback...');
+        loadDemoData();
+        return;
+      }
+
+      console.log('Google Apps Script is available');
+      console.log('Available functions:', Object.keys(google.script.run));
+
+      // Try to find the correct backend function name
+      let backendFunction = null;
+      const possibleFunctions = ['getReportData', 'getReportsData', 'generateReport', 'loadReportData'];
+      
+      for (let funcName of possibleFunctions) {
+        if (google.script.run[funcName]) {
+          backendFunction = funcName;
+          console.log(`Found backend function: ${funcName}`);
+          break;
+        }
+      }
+
+      if (!backendFunction) {
+        console.error('No suitable backend function found');
+        console.log('Available backend functions:', Object.keys(google.script.run));
+        console.log('Expected one of:', possibleFunctions);
+        console.log('Loading demo data as fallback...');
+        loadDemoData();
+        return;
+      }
+
+      console.log(`Calling backend function: ${backendFunction}...`);
+
+      try {
+        google.script.run
+          .withSuccessHandler(function(data) {
+            console.log('=== SUCCESS HANDLER CALLED ===');
+            console.log('Raw data received:', data);
+            console.log('Data type:', typeof data);
+            console.log('Data keys:', data ? Object.keys(data) : 'null/undefined');
+            
+            // Fix: Ensure currentData is always a valid object, never null
+            if (!data || typeof data !== 'object') {
+              console.warn('Backend returned null/invalid data, using empty defaults');
+              currentData = {
+                students: [],
+                cards: [],
+                attendance: [],
+                referrals: [],
+                teachers: [],
+                promos: [],
+                instruments: []
+              };
+            } else {
+              // Ensure all required arrays exist
+              currentData = {
+                students: data.students || [],
+                cards: data.cards || [],
+                attendance: data.attendance || [],
+                referrals: data.referrals || [],
+                teachers: data.teachers || [],
+                promos: data.promos || [],
+                instruments: data.instruments || []
+              };
+            }
+            
+            console.log('Final currentData structure:', currentData);
+            console.log('Students count:', currentData.students.length);
+            console.log('Cards count:', currentData.cards.length);
+            console.log('Attendance count:', currentData.attendance.length);
+            
+            // Add safety check before updating UI
+            if (currentData && typeof currentData === 'object') {
+              updateSummaryCards();
+              updateTeachersTable();
+              updatePromosTable();
+              updateInstrumentsTable();
+              updateStudentsTable();
+              updateCardsTable();
+              updateAttendanceTable();
+              updateReferralsTable();
+            } else {
+              console.error('currentData is still invalid after processing');
+              showErrorState('Failed to process data from backend');
+            }
+            
+            console.log('=== DATA PROCESSING COMPLETE ===');
+          })
+          .withFailureHandler(function(error) {
+            console.error('=== FAILURE HANDLER CALLED ===');
+            console.error('Error object:', error);
+            console.error('Error message:', error.message);
+            console.error('Error stack:', error.stack);
+            console.log('Loading demo data as fallback after backend failure...');
+            loadDemoData();
+          })
+          [backendFunction](fromDate, toDate);
+          
+        console.log('Backend call initiated...');
+        
+      } catch (error) {
+        console.error('=== EXCEPTION CAUGHT ===');
+        console.error('Exception calling backend function:', error);
+        console.error('Exception message:', error.message);
+        console.error('Exception stack:', error.stack);
+        console.log('Loading demo data as fallback after exception...');
+        loadDemoData();
+      }
+    }
+
+    function updateSummaryCards() {
+      try {
+        console.log('=== UPDATING SUMMARY CARDS ===');
+        
+        // EMERGENCY NULL CHECK - This should never happen but let's be extra safe
+        if (currentData === null || currentData === undefined) {
+          console.error('CRITICAL: currentData is null/undefined, emergency reset!');
+          currentData = {
+            students: [],
+            cards: [],
+            attendance: [],
+            referrals: [],
+            teachers: [],
+            promos: [],
+            instruments: []
+          };
+        }
+        
+        // Ensure currentData is valid before proceeding
+        currentData = ensureCurrentDataValid();
+        console.log('currentData:', currentData);
+        
+        // Ensure all arrays exist with additional null checks
+        const students = (currentData && currentData.students) ? currentData.students : [];
+        const cards = (currentData && currentData.cards) ? currentData.cards : [];
+        const attendance = (currentData && currentData.attendance) ? currentData.attendance : [];
+        
+        console.log('Array lengths:', { students: students.length, cards: cards.length, attendance: attendance.length });
+        
+        // New Students (from date range)
+        document.getElementById('totalStudents').textContent = students.length;
+        
+        // Active Students (students with attendance in date range)
+        const activeStudentCards = new Set(attendance.map(a => a.cardNumber));
+        document.getElementById('activeStudents').textContent = activeStudentCards.size;
+        
+        // Inactive Students (cards issued but no attendance in date range)
+        const allCards = new Set(cards.map(c => c.cardNumber));
+        const inactiveCount = allCards.size - activeStudentCards.size;
+        document.getElementById('inactiveStudents').textContent = Math.max(0, inactiveCount);
+        
+        // Total Card Purchases
+        document.getElementById('totalCards').textContent = cards.length;
+        
+        // Total Tuition Fee
+        const totalTuition = cards.reduce((sum, card) => sum + parseFloat(card.totalFee || 0), 0);
+        document.getElementById('totalTuition').textContent = '₱' + totalTuition.toLocaleString();
+        
+        // Total Lessons
+        document.getElementById('totalLessons').textContent = attendance.length;
+        
+        // Unique Promo Types
+        const uniquePromos = new Set(cards.map(c => c.promoType).filter(p => p));
+        document.getElementById('totalPromos').textContent = uniquePromos.size;
+        
+        // Unique Instruments
+        const uniqueInstruments = new Set(cards.map(c => c.instrument).filter(i => i));
+        document.getElementById('totalInstruments').textContent = uniqueInstruments.size;
+        
+        console.log('Summary cards updated successfully');
+      } catch (error) {
+        console.error('ERROR in updateSummaryCards:', error);
+        console.error('Stack trace:', error.stack);
+        console.error('currentData at time of error:', currentData);
+        
+        // Emergency fallback - show zeros
+        document.getElementById('totalStudents').textContent = '0';
+        document.getElementById('activeStudents').textContent = '0';
+        document.getElementById('inactiveStudents').textContent = '0';
+        document.getElementById('totalCards').textContent = '0';
+        document.getElementById('totalTuition').textContent = '₱0';
+        document.getElementById('totalLessons').textContent = '0';
+        document.getElementById('totalPromos').textContent = '0';
+        document.getElementById('totalInstruments').textContent = '0';
+      }
+    }
+
+    function updateTeachersTable() {
+      const tbody = document.getElementById('teachersTableBody');
+      
+      // Ensure currentData is valid
+      currentData = ensureCurrentDataValid();
+      
+      // Safety check
+      if (!currentData.cards || !currentData.attendance) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><span class="icon">⚠️</span><br>Data not available</td></tr>';
+        return;
+      }
+      
+      // Get teacher data from cards and attendance
+      const teacherStats = {};
+      
+      // Initialize teachers from cards
+      currentData.cards.forEach(card => {
+        if (card.teacher && !teacherStats[card.teacher]) {
+          teacherStats[card.teacher] = {
+            present: 0,
+            forfeited: 0,
+            total: 0
+          };
+        }
+      });
+      
+      // Count attendance by teacher
+      currentData.attendance.forEach(record => {
+        // Find the teacher for this card
+        const cardInfo = currentData.cards.find(c => c.cardNumber === record.cardNumber);
+        const teacher = cardInfo?.teacher || 'Unknown';
+        
+        if (!teacherStats[teacher]) {
+          teacherStats[teacher] = {
+            present: 0,
+            forfeited: 0,
+            total: 0
+          };
+        }
+        
+        teacherStats[teacher].total++;
+        
+        switch(record.remarks?.toLowerCase()) {
+          case 'present':
+            teacherStats[teacher].present++;
+            break;
+          case 'forfeited':
+            teacherStats[teacher].forfeited++;
+            break;
+          // Skip 'closed' and 'school forfeited' - they are not included in the report
+        }
+      });
+      
+      if (Object.keys(teacherStats).length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><span class="icon">👩‍🏫</span><br>No teacher data found for selected date range</td></tr>';
+        return;
+      }
+      
+      const sortedTeachers = Object.entries(teacherStats)
+        .sort((a, b) => b[1].total - a[1].total); // Sort by total lessons descending
+      
+      tbody.innerHTML = sortedTeachers.map(([teacher, stats]) => `
+        <tr>
+          <td><strong>${teacher}</strong></td>
+          <td>${stats.present}</td>
+          <td>${stats.forfeited}</td>
+          <td><strong>${stats.total}</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    function updatePromosTable() {
+      const tbody = document.getElementById('promosTableBody');
+      
+      // Ensure currentData is valid
+      currentData = ensureCurrentDataValid();
+      
+      // Safety check
+      if (!currentData.cards) {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-state"><span class="icon">⚠️</span><br>Data not available</td></tr>';
+        return;
+      }
+      
+      // Count promo types
+      const promoCounts = {};
+      const totalCards = currentData.cards.length;
+      
+      currentData.cards.forEach(card => {
+        const promo = card.promoType || 'No Promo';
+        promoCounts[promo] = (promoCounts[promo] || 0) + 1;
+      });
+      
+      if (Object.keys(promoCounts).length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-state"><span class="icon">🎟️</span><br>No promo data found for selected date range</td></tr>';
+        return;
+      }
+      
+      const sortedPromos = Object.entries(promoCounts)
+        .sort((a, b) => b[1] - a[1]) // Sort by count descending
+        .map(([promo, count]) => ({
+          promo,
+          count,
+          percentage: ((count / totalCards) * 100).toFixed(1)
+        }));
+      
+      tbody.innerHTML = sortedPromos.map(item => `
+        <tr>
+          <td><strong>${item.promo}</strong></td>
+          <td>${item.count}</td>
+          <td>${item.percentage}%</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateInstrumentsTable() {
+      const tbody = document.getElementById('instrumentsTableBody');
+      
+      // Ensure currentData is valid
+      currentData = ensureCurrentDataValid();
+      
+      // Safety check
+      if (!currentData.cards) {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-state"><span class="icon">⚠️</span><br>Data not available</td></tr>';
+        return;
+      }
+      
+      // Count instrument types
+      const instrumentCounts = {};
+      const totalCards = currentData.cards.length;
+      
+      currentData.cards.forEach(card => {
+        const instrument = card.instrument || 'Not Specified';
+        instrumentCounts[instrument] = (instrumentCounts[instrument] || 0) + 1;
+      });
+      
+      if (Object.keys(instrumentCounts).length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-state"><span class="icon">🎵</span><br>No instrument data found for selected date range</td></tr>';
+        return;
+      }
+      
+      const sortedInstruments = Object.entries(instrumentCounts)
+        .sort((a, b) => b[1] - a[1]) // Sort by count descending
+        .map(([instrument, count]) => ({
+          instrument,
+          count,
+          percentage: ((count / totalCards) * 100).toFixed(1)
+        }));
+      
+      tbody.innerHTML = sortedInstruments.map(item => `
+        <tr>
+          <td><strong>${item.instrument}</strong></td>
+          <td>${item.count}</td>
+          <td>${item.percentage}%</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStudentsTable() {
+      const tbody = document.getElementById('studentsTableBody');
+      
+      // Ensure currentData is valid
+      currentData = ensureCurrentDataValid();
+      
+      // Safety check
+      if (!currentData.students) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><span class="icon">⚠️</span><br>Data not available</td></tr>';
+        return;
+      }
+      
+      if (currentData.students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><span class="icon">📭</span><br>No students found for selected date range</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = currentData.students.map(student => `
+        <tr>
+          <td>${formatDisplayDate(student.timestamp)}</td>
+          <td><strong>${student.fullName}</strong></td>
+          <td>${student.age}</td>
+          <td>${student.email}</td>
+          <td>${student.phone}</td>
+          <td>${student.emergencyContact}</td>
+          <td>${student.socialMediaConsent}</td>
+          <td>${student.referralSource || '-'}</td>
+          <td>${student.referralDetails || '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateCardsTable() {
+      const tbody = document.getElementById('cardsTableBody');
+      
+      // Ensure currentData is valid
+      currentData = ensureCurrentDataValid();
+      
+      // Safety check
+      if (!currentData.cards) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><span class="icon">⚠️</span><br>Data not available</td></tr>';
+        return;
+      }
+      
+      if (currentData.cards.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><span class="icon">💳</span><br>No cards found for selected date range</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = currentData.cards.map(card => `
+        <tr>
+          <td>${formatDisplayDate(card.timestamp)}</td>
+          <td><strong>${card.cardNumber}</strong></td>
+          <td>${card.studentName}</td>
+          <td>${card.teacher}</td>
+          <td>${card.level}</td>
+          <td>${card.instrument}</td>
+          <td>${card.promoType}</td>
+          <td>₱${parseFloat(card.monthlyFee || 0).toLocaleString()}</td>
+          <td>₱${parseFloat(card.totalFee || 0).toLocaleString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateAttendanceTable() {
+      const tbody = document.getElementById('attendanceTableBody');
+      
+      // Ensure currentData is valid
+      currentData = ensureCurrentDataValid();
+      
+      // Safety check
+      if (!currentData.attendance) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><span class="icon">⚠️</span><br>Data not available</td></tr>';
+        return;
+      }
+      
+      if (currentData.attendance.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><span class="icon">📋</span><br>No attendance records found for selected date range</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = currentData.attendance.map(record => `
+        <tr>
+          <td>${formatDisplayDate(record.timestamp)}</td>
+          <td><strong>${record.cardNumber}</strong></td>
+          <td>${record.studentName || '-'}</td>
+          <td>#${record.lessonNumber}</td>
+          <td><span class="status-badge ${getStatusClass(record.remarks)}">${record.remarks}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function updateReferralsTable() {
+      const tbody = document.getElementById('referralsTableBody');
+      
+      // Ensure currentData is valid
+      currentData = ensureCurrentDataValid();
+      
+      // Safety check
+      if (!currentData.students) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><span class="icon">⚠️</span><br>Data not available</td></tr>';
+        return;
+      }
+      
+      // Count referrals by source and details
+      const referralCounts = {};
+      const totalReferrals = currentData.students.filter(s => s.referralSource).length;
+      
+      currentData.students
+        .filter(s => s.referralSource)
+        .forEach(student => {
+          const key = `${student.referralSource}|${student.referralDetails || '-'}`;
+          referralCounts[key] = (referralCounts[key] || 0) + 1;
+        });
+      
+      if (Object.keys(referralCounts).length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><span class="icon">📊</span><br>No referral data found for selected date range</td></tr>';
+        return;
+      }
+      
+      const sortedReferrals = Object.entries(referralCounts)
+        .sort((a, b) => b[1] - a[1]) // Sort by count descending
+        .map(([key, count]) => {
+          const [source, details] = key.split('|');
+          const percentage = ((count / totalReferrals) * 100).toFixed(1);
+          return { source, details, count, percentage };
+        });
+      
+      tbody.innerHTML = sortedReferrals.map(referral => `
+        <tr>
+          <td><strong>${referral.source}</strong></td>
+          <td>${referral.details}</td>
+          <td>${referral.count}</td>
+          <td>${referral.percentage}%</td>
+        </tr>
+      `).join('');
+    }
+
+    function formatDisplayDate(timestamp) {
+      if (!timestamp) return '-';
+      const date = new Date(timestamp);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+
+    function getStatusClass(status) {
+      switch(status?.toLowerCase()) {
+        case 'present': return 'status-present';
+        case 'forfeited': return 'status-forfeited';
+        case 'closed': return 'status-closed';
+        case 'school forfeited': return 'status-school-forfeited';
+        default: return '';
+      }
+    }
+
+    function showErrorState(errorMessage = 'Error loading data. Please try again.') {
+      const errorRow = `<tr><td colspan="100%" class="empty-state"><span class="icon">⚠️</span><br>${errorMessage}</td></tr>`;
+      document.getElementById('teachersTableBody').innerHTML = errorRow;
+      document.getElementById('promosTableBody').innerHTML = errorRow;
+      document.getElementById('instrumentsTableBody').innerHTML = errorRow;
+      document.getElementById('studentsTableBody').innerHTML = errorRow;
+      document.getElementById('cardsTableBody').innerHTML = errorRow;
+      document.getElementById('attendanceTableBody').innerHTML = errorRow;
+      document.getElementById('referralsTableBody').innerHTML = errorRow;
+      
+      // Also show error in summary cards
+      const errorSummary = 'Error';
+      document.getElementById('totalStudents').textContent = errorSummary;
+      document.getElementById('activeStudents').textContent = errorSummary;
+      document.getElementById('inactiveStudents').textContent = errorSummary;
+      document.getElementById('totalCards').textContent = errorSummary;
+      document.getElementById('totalTuition').textContent = errorSummary;
+      document.getElementById('totalLessons').textContent = errorSummary;
+      document.getElementById('totalPromos').textContent = errorSummary;
+      document.getElementById('totalInstruments').textContent = errorSummary;
+    }
+
+    // NOTE: Removed old exportTable function - using handleExportTable instead
+
+    // Demo data function for testing without backend
+    function loadDemoData() {
+      console.log('Loading demo data...');
+      
+      const today = new Date();
+      const demoData = {
+        students: [
+          {
+            timestamp: today.toISOString(),
+            fullName: "Dela Cruz, Juan Carlos",
+            age: 25,
+            email: "juan.delacruz@email.com",
+            phone: "09123456789",
+            emergencyContact: "Maria Dela Cruz",
+            socialMediaConsent: "Yes",
+            referralSource: "Social Media",
+            referralDetails: "Facebook"
+          },
+          {
+            timestamp: new Date(today.getTime() - 86400000).toISOString(),
+            fullName: "Santos, Maria Elena",
+            age: 16,
+            email: "maria.santos@email.com",
+            phone: "09987654321",
+            emergencyContact: "Roberto Santos",
+            socialMediaConsent: "No",
+            referralSource: "Referred",
+            referralDetails: "Friend recommendation"
+          },
+          {
+            timestamp: new Date(today.getTime() - 172800000).toISOString(),
+            fullName: "Garcia, Ana Rose",
+            age: 30,
+            email: "ana.garcia@email.com",
+            phone: "09111222333",
+            emergencyContact: "Pedro Garcia",
+            socialMediaConsent: "Yes",
+            referralSource: "Google Search",
+            referralDetails: "Online search"
+          }
+        ],
+        cards: [
+          {
+            timestamp: today.toISOString(),
+            cardNumber: "DMS001",
+            studentName: "Dela Cruz, Juan Carlos",
+            teacher: "T'Vivian",
+            level: "Intermediate",
+            instrument: "Piano",
+            promoType: "Regular",
+            monthlyFee: 2000,
+            totalFee: 8000
+          },
+          {
+            timestamp: new Date(today.getTime() - 86400000).toISOString(),
+            cardNumber: "DMS002",
+            studentName: "Santos, Maria Elena",
+            teacher: "T'Mark",
+            level: "Preparatory",
+            instrument: "Voice",
+            promoType: "Student Discount",
+            monthlyFee: 1800,
+            totalFee: 7200
+          },
+          {
+            timestamp: new Date(today.getTime() - 172800000).toISOString(),
+            cardNumber: "DMS003",
+            studentName: "Garcia, Ana Rose",
+            teacher: "T'Sarah",
+            level: "Advanced",
+            instrument: "Guitar",
+            promoType: "Regular",
+            monthlyFee: 2200,
+            totalFee: 8800
+          }
+        ],
+        attendance: [
+          {
+            timestamp: today.toISOString(),
+            cardNumber: "DMS001",
+            studentName: "Dela Cruz, Juan Carlos",
+            lessonNumber: 1,
+            remarks: "Present"
+          },
+          {
+            timestamp: new Date(today.getTime() - 86400000).toISOString(),
+            cardNumber: "DMS002",
+            studentName: "Santos, Maria Elena",
+            lessonNumber: 1,
+            remarks: "Present"
+          },
+          {
+            timestamp: new Date(today.getTime() - 172800000).toISOString(),
+            cardNumber: "DMS001",
+            studentName: "Dela Cruz, Juan Carlos",
+            lessonNumber: 2,
+            remarks: "Forfeited"
+          },
+          {
+            timestamp: new Date(today.getTime() - 259200000).toISOString(),
+            cardNumber: "DMS003",
+            studentName: "Garcia, Ana Rose",
+            lessonNumber: 1,
+            remarks: "Present"
+          },
+          {
+            timestamp: new Date(today.getTime() - 345600000).toISOString(),
+            cardNumber: "DMS002",
+            studentName: "Santos, Maria Elena",
+            lessonNumber: 2,
+            remarks: "Present"
+          }
+        ]
+      };
+      
+      // Simulate loading delay but shorter for testing
+      setTimeout(() => {
+        console.log('Setting currentData to demo data...');
+        currentData = demoData;
+        console.log('currentData after assignment:', currentData);
+        
+        updateSummaryCards();
+        updateTeachersTable();
+        updatePromosTable();
+        updateInstrumentsTable();
+        updateStudentsTable();
+        updateCardsTable();
+        updateAttendanceTable();
+        updateReferralsTable();
+        
+        console.log('Demo data loaded and all tables updated successfully');
+      }, 500); // Reduced from 1000ms to 500ms for faster testing
+    }
+
+    // INSTANT demo data function for immediate testing
+    function loadDemoDataInstant() {
+      console.log('Loading demo data INSTANTLY...');
+      
+      const today = new Date();
+      const demoData = {
+        students: [
+          {
+            timestamp: today.toISOString(),
+            fullName: "Dela Cruz, Juan Carlos",
+            age: 25,
+            email: "juan.delacruz@email.com",
+            phone: "09123456789",
+            emergencyContact: "Maria Dela Cruz",
+            socialMediaConsent: "Yes",
+            referralSource: "Social Media",
+            referralDetails: "Facebook"
+          },
+          {
+            timestamp: new Date(today.getTime() - 86400000).toISOString(),
+            fullName: "Santos, Maria Elena",
+            age: 16,
+            email: "maria.santos@email.com",
+            phone: "09987654321",
+            emergencyContact: "Roberto Santos",
+            socialMediaConsent: "No",
+            referralSource: "Referred",
+            referralDetails: "Friend recommendation"
+          },
+          {
+            timestamp: new Date(today.getTime() - 172800000).toISOString(),
+            fullName: "Garcia, Ana Rose",
+            age: 30,
+            email: "ana.garcia@email.com",
+            phone: "09111222333",
+            emergencyContact: "Pedro Garcia",
+            socialMediaConsent: "Yes",
+            referralSource: "Google Search",
+            referralDetails: "Online search"
+          }
+        ],
+        cards: [
+          {
+            timestamp: today.toISOString(),
+            cardNumber: "DMS001",
+            studentName: "Dela Cruz, Juan Carlos",
+            teacher: "T'Vivian",
+            level: "Intermediate",
+            instrument: "Piano",
+            promoType: "Regular",
+            monthlyFee: 2000,
+            totalFee: 8000
+          },
+          {
+            timestamp: new Date(today.getTime() - 86400000).toISOString(),
+            cardNumber: "DMS002",
+            studentName: "Santos, Maria Elena",
+            teacher: "T'Mark",
+            level: "Preparatory",
+            instrument: "Voice",
+            promoType: "Student Discount",
+            monthlyFee: 1800,
+            totalFee: 7200
+          },
+          {
+            timestamp: new Date(today.getTime() - 172800000).toISOString(),
+            cardNumber: "DMS003",
+            studentName: "Garcia, Ana Rose",
+            teacher: "T'Sarah",
+            level: "Advanced",
+            instrument: "Guitar",
+            promoType: "Regular",
+            monthlyFee: 2200,
+            totalFee: 8800
+          }
+        ],
+        attendance: [
+          {
+            timestamp: today.toISOString(),
+            cardNumber: "DMS001",
+            studentName: "Dela Cruz, Juan Carlos",
+            lessonNumber: 1,
+            remarks: "Present"
+          },
+          {
+            timestamp: new Date(today.getTime() - 86400000).toISOString(),
+            cardNumber: "DMS002",
+            studentName: "Santos, Maria Elena",
+            lessonNumber: 1,
+            remarks: "Present"
+          },
+          {
+            timestamp: new Date(today.getTime() - 172800000).toISOString(),
+            cardNumber: "DMS001",
+            studentName: "Dela Cruz, Juan Carlos",
+            lessonNumber: 2,
+            remarks: "Forfeited"
+          },
+          {
+            timestamp: new Date(today.getTime() - 259200000).toISOString(),
+            cardNumber: "DMS003",
+            studentName: "Garcia, Ana Rose",
+            lessonNumber: 1,
+            remarks: "Present"
+          },
+          {
+            timestamp: new Date(today.getTime() - 345600000).toISOString(),
+            cardNumber: "DMS002",
+            studentName: "Santos, Maria Elena",
+            lessonNumber: 2,
+            remarks: "Present"
+          }
+        ]
+      };
+      
+      // NO DELAY - Load immediately
+      console.log('Setting currentData to demo data instantly...');
+      currentData = demoData;
+      console.log('currentData after instant assignment:', currentData);
+      
+      updateSummaryCards();
+      updateTeachersTable();
+      updatePromosTable();
+      updateInstrumentsTable();
+      updateStudentsTable();
+      updateCardsTable();
+      updateAttendanceTable();
+      updateReferralsTable();
+      
+      console.log('INSTANT demo data loaded and all tables updated successfully');
+    }
+
+    
+    // Helper Functions for Data Processing and UI Updates
+    function showLoading() {
+      console.log('Showing loading states...');
+      
+      const loadingHTML = '<tr class="loading"><td colspan="100%" style="text-align: center; padding: 40px;"><div style="display: inline-block; padding: 10px 20px; background: #f8f9fa; border-radius: 5px; color: #666;"><strong>⏳ Loading data...</strong></div></td></tr>';
+      
+      // Show loading in all table bodies
+      ['summaryTable', 'detailsTable', 'feeTable'].forEach(tableId => {
+        const tbody = document.querySelector(`#${tableId} tbody`);
+        if (tbody) {
+          tbody.innerHTML = loadingHTML;
+        }
+      });
+      
+      // Update summary cards
+      document.querySelectorAll('.summary-card .card-value').forEach(card => {
+        card.textContent = '...';
+      });
+    }
+    
+    function formatDate(date) {
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+    
+    function formatCurrency(amount) {
+      const num = parseFloat(amount) || 0;
+      return '₹' + num.toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+    
+    function loadReportData(fromDate, toDate) {
+      console.log('=== LOADING REPORT DATA ===');
+      console.log('Date range:', fromDate, 'to', toDate);
+      
+      try {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          console.log('Using Google Apps Script backend');
+          
+          google.script.run
+            .withSuccessHandler(function(data) {
+              console.log('Backend data received:', data);
+              updateUI(data);
+            })
+            .withFailureHandler(function(error) {
+              console.error('Backend error:', error);
+              showError('Failed to load data: ' + error.toString());
+            })
+            .getReportData(fromDate, toDate);
+            
+        } else {
+          console.log('Google Apps Script not available, using demo data');
+          // Demo data for testing
+          const demoData = {
+            summaryStats: {
+              totalStudents: 156,
+              presentStudents: 142,
+              absentStudents: 14,
+              attendanceRate: 91.03,
+              totalFees: 45000,
+              paidFees: 38500,
+              pendingFees: 6500
+            },
+            attendanceDetails: [
+              { studentName: 'John Doe', rollNumber: '2023001', status: 'Present', date: fromDate },
+              { studentName: 'Jane Smith', rollNumber: '2023002', status: 'Absent', date: fromDate }
+            ],
+            feeDetails: [
+              { studentName: 'John Doe', rollNumber: '2023001', totalFee: 5000, paidAmount: 3000, pendingAmount: 2000, lastPayment: '2024-01-15' },
+              { studentName: 'Jane Smith', rollNumber: '2023002', totalFee: 4500, paidAmount: 4500, pendingAmount: 0, lastPayment: '2024-01-10' }
+            ]
+          };
+          
+          setTimeout(() => {
+            console.log('Demo data loaded');
+            updateUI(demoData);
+          }, 1000);
+        }
+        
+      } catch (error) {
+        console.error('Error in loadReportData:', error);
+        showError('Error loading data: ' + error.toString());
+      }
+    }
+    
+    function updateUI(data) {
+      console.log('=== UPDATING UI WITH DATA ===');
+      console.log('Data structure:', data);
+      
+      try {
+        // Update summary cards
+        if (data.summaryStats) {
+          updateSummaryCards(data.summaryStats);
+        }
+        
+        // Update attendance details table
+        if (data.attendanceDetails) {
+          updateAttendanceTable(data.attendanceDetails);
+        }
+        
+        // Update fee details table
+        if (data.feeDetails) {
+          updateFeeTable(data.feeDetails);
+        }
+        
+        console.log('UI update completed successfully');
+        
+      } catch (error) {
+        console.error('Error updating UI:', error);
+        showError('Error displaying data: ' + error.toString());
+      }
+    }
+    
+    function updateSummaryCards(stats) {
+      console.log('Updating summary cards with:', stats);
+      
+      const cardMappings = [
+        { selector: '.summary-card:nth-child(1) .card-value', value: stats.totalStudents || '0', label: 'Total Students' },
+        { selector: '.summary-card:nth-child(2) .card-value', value: stats.presentStudents || '0', label: 'Present' },
+        { selector: '.summary-card:nth-child(3) .card-value', value: stats.absentStudents || '0', label: 'Absent' },
+        { selector: '.summary-card:nth-child(4) .card-value', value: (stats.attendanceRate || 0).toFixed(1) + '%', label: 'Attendance Rate' },
+        { selector: '.summary-card:nth-child(5) .card-value', value: formatCurrency(stats.totalFees || 0), label: 'Total Fees' },
+        { selector: '.summary-card:nth-child(6) .card-value', value: formatCurrency(stats.paidFees || 0), label: 'Paid' },
+        { selector: '.summary-card:nth-child(7) .card-value', value: formatCurrency(stats.pendingFees || 0), label: 'Pending' }
+      ];
+      
+      cardMappings.forEach(mapping => {
+        const element = document.querySelector(mapping.selector);
+        if (element) {
+          element.textContent = mapping.value;
+          console.log(`✅ Updated ${mapping.label}: ${mapping.value}`);
+        } else {
+          console.log(`⚠️ Element not found for ${mapping.label}`);
+        }
+      });
+    }
+    
+    function updateAttendanceTable(attendanceData) {
+      console.log('Updating attendance table with', attendanceData.length, 'records');
+      
+      const tbody = document.querySelector('#detailsTable tbody');
+      if (!tbody) {
+        console.error('Attendance table body not found');
+        return;
+      }
+      
+      if (!attendanceData || attendanceData.length === 0) {
+        tbody.innerHTML = '<tr class="empty-state"><td colspan="4" style="text-align: center; padding: 40px; color: #666;"><strong>📋 No attendance records found</strong><br><small>Try adjusting your date range</small></td></tr>';
+        return;
+      }
+      
+      const rows = attendanceData.map(record => `
+        <tr>
+          <td>${record.studentName || 'N/A'}</td>
+          <td>${record.rollNumber || 'N/A'}</td>
+          <td><span class="status-badge ${(record.status || '').toLowerCase()}">${record.status || 'Unknown'}</span></td>
+          <td>${record.date || 'N/A'}</td>
+        </tr>
+      `).join('');
+      
+      tbody.innerHTML = rows;
+    }
+    
+    function updateFeeTable(feeData) {
+      console.log('Updating fee table with', feeData.length, 'records');
+      
+      const tbody = document.querySelector('#feeTable tbody');
+      if (!tbody) {
+        console.error('Fee table body not found');
+        return;
+      }
+      
+      if (!feeData || feeData.length === 0) {
+        tbody.innerHTML = '<tr class="empty-state"><td colspan="6" style="text-align: center; padding: 40px; color: #666;"><strong>💰 No fee records found</strong><br><small>Try adjusting your date range</small></td></tr>';
+        return;
+      }
+      
+      const rows = feeData.map(record => `
+        <tr>
+          <td>${record.studentName || 'N/A'}</td>
+          <td>${record.rollNumber || 'N/A'}</td>
+          <td>${formatCurrency(record.totalFee || 0)}</td>
+          <td>${formatCurrency(record.paidAmount || 0)}</td>
+          <td>${formatCurrency(record.pendingAmount || 0)}</td>
+          <td>${record.lastPayment || 'N/A'}</td>
+        </tr>
+      `).join('');
+      
+      tbody.innerHTML = rows;
+    }
+    
+    function showError(message) {
+      console.error('Displaying error:', message);
+      
+      const errorHTML = `<tr class="error-state"><td colspan="100%" style="text-align: center; padding: 40px; color: #dc3545; background: #f8d7da; border-radius: 5px;"><strong>❌ Error</strong><br><small>${message}</small></td></tr>`;
+      
+      // Show error in all table bodies
+      ['summaryTable', 'detailsTable', 'feeTable'].forEach(tableId => {
+        const tbody = document.querySelector(`#${tableId} tbody`);
+        if (tbody) {
+          tbody.innerHTML = errorHTML;
+        }
+      });
+      
+      // Reset summary cards
+      document.querySelectorAll('.summary-card .card-value').forEach(card => {
+        card.textContent = '0';
+      });
+    }
+    
+    // Initialize the page when DOM is ready
+    function initializePage() {
+      console.log('=== INITIALIZING PAGE ===');
+      
+      // Set default date range (last 30 days)
+      const today = new Date();
+      const thirtyDaysAgo = new Date(today);
+      thirtyDaysAgo.setDate(today.getDate() - 30);
+      
+      document.getElementById('fromDate').value = formatDate(thirtyDaysAgo);
+      document.getElementById('toDate').value = formatDate(today);
+      
+      // Show the attendance report by default
+      window.handleShowReport('attendance', { target: document.querySelector('.tab-btn') });
+      
+      console.log('Page initialization completed');
+    }
+    
+    // Run initialization when DOM is loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializePage);
+    } else {
+      initializePage();
+    }
+
+    // DELAYED VERIFICATION - Check if functions survived document ready
+    setTimeout(() => {
+      console.log('=== DELAYED VERIFICATION (1 second later) ===');
+      console.log('window.applyFilter still available:', typeof window.applyFilter);
+      console.log('global applyFilter still available:', typeof applyFilter !== 'undefined');
+      
+      const testButton = document.querySelector('.filter-btn');
+      if (testButton) {
+        console.log('✅ Generate Report button found');
+        console.log('Button onclick:', testButton.getAttribute('onclick'));
+        
+        // Try to manually trigger function to test accessibility
+        try {
+          if (typeof window.applyFilter === 'function') {
+            console.log('✅ window.applyFilter is callable');
+          }
+          if (typeof applyFilter !== 'undefined') {
+            console.log('✅ global applyFilter is accessible');
+          }
+        } catch (e) {
+          console.error('❌ Function test failed:', e);
+        }
+      } else {
+        console.error('❌ Generate Report button NOT found after 1 second');
+      }
+      
+      // Google Apps Script specific debugging
+      if (typeof google !== 'undefined') {
+        console.log('=== GOOGLE APPS SCRIPT STATUS ===');
+        console.log('Available backend functions:', google.script && google.script.run ? Object.keys(google.script.run) : 'none');
+      }
+    }, 1000);
+
+    // IMMEDIATE DOM READY CHECK
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== DOM CONTENT LOADED EVENT ===');
+        console.log('Functions still available after DOMContentLoaded:');
+        console.log('- window.applyFilter:', typeof window.applyFilter);
+        console.log('- global applyFilter:', typeof applyFilter !== 'undefined');
+      });
+    } else {
+      console.log('=== DOM ALREADY READY ===');
+      console.log('Document ready state:', document.readyState);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Environment Diagnostic</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #ffffff; }
+        .test { margin: 10px 0; padding: 10px; border-left: 3px solid #007acc; background: #2d2d30; }
+        .success { border-color: #4caf50; }
+        .error { border-color: #f44336; }
+        .warning { border-color: #ff9800; }
+        button { padding: 10px 15px; margin: 5px; border: none; border-radius: 3px; cursor: pointer; }
+        .btn-test { background: #007acc; color: white; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Environment Diagnostic Tool</h1>
+    
+    <div id="results">
+        <div class="test">🚀 Running diagnostics...</div>
+    </div>
+    
+    <button class="btn-test" onclick="runTest()">🧪 Run Test</button>
+    <button class="btn-test" onclick="clearResults()">🧹 Clear</button>
+    
+    <script>
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = message;
+            document.getElementById('results').appendChild(div);
+            console.log(message);
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '<div class="test">🧹 Results cleared</div>';
+        }
+        
+        function runTest() {
+            clearResults();
+            
+            log('🔍 Starting Environment Diagnostic...', 'info');
+            
+            // Test 1: Basic JavaScript
+            try {
+                log('✅ Test 1: JavaScript engine working', 'success');
+            } catch (e) {
+                log('❌ Test 1: JavaScript engine failed: ' + e.message, 'error');
+            }
+            
+            // Test 2: DOM Access
+            try {
+                const testElement = document.getElementById('results');
+                if (testElement) {
+                    log('✅ Test 2: DOM access working', 'success');
+                } else {
+                    log('❌ Test 2: Cannot access DOM elements', 'error');
+                }
+            } catch (e) {
+                log('❌ Test 2: DOM access failed: ' + e.message, 'error');
+            }
+            
+            // Test 3: Event Handling
+            try {
+                log('✅ Test 3: onclick events working (you clicked this button)', 'success');
+            } catch (e) {
+                log('❌ Test 3: Event handling failed: ' + e.message, 'error');
+            }
+            
+            // Test 4: Function Creation
+            try {
+                function testFunc() { return 'working'; }
+                if (typeof testFunc === 'function') {
+                    log('✅ Test 4: Function creation working', 'success');
+                } else {
+                    log('❌ Test 4: Function creation failed', 'error');
+                }
+            } catch (e) {
+                log('❌ Test 4: Function creation failed: ' + e.message, 'error');
+            }
+            
+            // Test 5: Global Scope
+            try {
+                window.testGlobal = 'working';
+                if (window.testGlobal === 'working') {
+                    log('✅ Test 5: Global scope access working', 'success');
+                } else {
+                    log('❌ Test 5: Global scope access failed', 'error');
+                }
+            } catch (e) {
+                log('❌ Test 5: Global scope failed: ' + e.message, 'error');
+            }
+            
+            // Test 6: Console
+            try {
+                console.log('Console test message');
+                log('✅ Test 6: Console logging working', 'success');
+            } catch (e) {
+                log('❌ Test 6: Console failed: ' + e.message, 'error');
+            }
+            
+            // Test 7: Browser Info
+            try {
+                log(`ℹ️ Browser: ${navigator.userAgent.split(' ').pop()}`, 'info');
+                log(`ℹ️ Document Ready State: ${document.readyState}`, 'info');
+                log(`ℹ️ Window Location: ${window.location.href}`, 'info');
+            } catch (e) {
+                log('⚠️ Test 7: Browser info partially failed: ' + e.message, 'warning');
+            }
+            
+            // Test 8: Google Apps Script Detection
+            try {
+                if (typeof google !== 'undefined' && google.script) {
+                    log('🔧 Google Apps Script environment detected', 'warning');
+                    log(`📋 Available functions: ${Object.keys(google.script.run).join(', ')}`, 'info');
+                } else {
+                    log('🌐 Standard web browser environment', 'info');
+                }
+            } catch (e) {
+                log('⚠️ Test 8: Environment detection failed: ' + e.message, 'warning');
+            }
+            
+            log('🎯 Diagnostic complete! Check results above.', 'success');
+        }
+        
+        // Auto-run on page load
+        setTimeout(() => {
+            log('📋 Page loaded. Click "Run Test" button to start diagnostics.', 'info');
+        }, 100);
+        
+        console.log('🔍 Diagnostic page loaded successfully');
+    </script>
+</body>
+</html>

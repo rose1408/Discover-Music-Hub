@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Discover Music School - Main Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f1c40f 0%, #f39c12 35%, #e67e22 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Musical Note Background Animation */
+    body::before {
+      content: '♪ ♫ ♪ ♬ ♫ ♪ ♫ ♬ ♪ ♫ ♪ ♬ ♫ ♪ ♫ ♬ ♪ ♫ ♪ ♬ ♫ ♪ ♫ ♬ ♪ ♫ ♪ ♬ ♫ ♪ ♫ ♬ ♪ ♫ ♪ ♬ ♫ ♪ ♫ ♬';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      font-size: 2.5rem;
+      color: rgba(255, 255, 255, 0.4);
+      line-height: 3.2rem;
+      word-spacing: 2rem;
+      animation: floatingNotes 18s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+      text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+    }
+
+    /* Additional layer of floating notes */
+    body::after {
+      content: '♩ ♪ ♫ ♬ ♭ ♯ ♮ ♩ ♪ ♫ ♬ ♭ ♯ ♮ ♩ ♪ ♫ ♬ ♭ ♯ ♮ ♩ ♪ ♫ ♬ ♭ ♯ ♮';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 150%;
+      height: 100%;
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.25);
+      line-height: 4rem;
+      word-spacing: 2.5rem;
+      animation: floatingNotesReverse 22s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+      text-shadow: 0 0 8px rgba(241, 196, 15, 0.2);
+    }
+
+    @keyframes floatingNotesReverse {
+      0% { transform: translateX(50%) translateY(-100%); }
+      100% { transform: translateX(50%) translateY(100%); }
+    }
+
+    @keyframes floatingNotes {
+      0% { transform: translateX(-50%) translateY(100%); }
+      100% { transform: translateX(-50%) translateY(-100%); }
+    }
+    
+    .main-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(241, 196, 15, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      max-width: 750px;
+      width: 100%;
+      animation: slideIn 0.8s ease-out;
+      position: relative;
+      z-index: 2;
+      border: 2px solid rgba(241, 196, 15, 0.3);
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #f1c40f 0%, #f39c12 50%, #e67e22 100%);
+      padding: 25px 20px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 255, 255, 0.1) 10px,
+        rgba(255, 255, 255, 0.1) 20px
+      );
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .logo {
+      max-width: 180px;
+      height: auto;
+      margin-bottom: 15px;
+      filter: brightness(1.3) drop-shadow(0 6px 12px rgba(241, 196, 15, 0.4));
+      position: relative;
+      z-index: 3;
+      animation: gentleBounce 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes gentleBounce {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-5px); }
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 3;
+      text-shadow: 2px 2px 8px rgba(241, 196, 15, 0.5);
+    }
+    
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.95;
+      font-weight: 300;
+      position: relative;
+      z-index: 3;
+      text-shadow: 1px 1px 4px rgba(241, 196, 15, 0.3);
+    }
+    
+    .dashboard {
+      padding: 35px 25px;
+    }
+    
+    .dashboard-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .dashboard-title h2 {
+      color: #d68910;
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      text-shadow: 1px 1px 3px rgba(214, 137, 16, 0.2);
+    }
+    
+    .dashboard-title p {
+      color: #f39c12;
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+    
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+    
+    .card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 248, 220, 0.8) 100%);
+      border-radius: 15px;
+      padding: 20px 18px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(241, 196, 15, 0.15), 0 2px 10px rgba(243, 156, 18, 0.1);
+      transition: all 0.4s ease;
+      cursor: pointer;
+      border: 1px solid rgba(241, 196, 15, 0.3);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(241, 196, 15, 0.3), transparent);
+      transition: left 0.6s ease;
+    }
+    
+    .card:hover::before {
+      left: 100%;
+    }
+    
+    .card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(241, 196, 15, 0.25), 0 5px 15px rgba(243, 156, 18, 0.2);
+      border-color: rgba(241, 196, 15, 0.4);
+    }
+    
+    .card.student-info {
+      border-top: 4px solid #ff6b35;
+      background: linear-gradient(145deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 255, 255, 0.9) 100%);
+    }
+    
+    .card.student-info:hover {
+      border-color: #ff6b35;
+      box-shadow: 0 20px 60px rgba(255, 107, 53, 0.3), 0 5px 15px rgba(255, 107, 53, 0.1);
+    }
+    
+    .card.new-card {
+      border-top: 4px solid #f39c12;
+      background: linear-gradient(145deg, rgba(243, 156, 18, 0.05) 0%, rgba(255, 255, 255, 0.9) 100%);
+    }
+    
+    .card.new-card:hover {
+      border-color: #f39c12;
+      box-shadow: 0 20px 60px rgba(243, 156, 18, 0.3), 0 5px 15px rgba(243, 156, 18, 0.1);
+    }
+    
+    .card.attendance {
+      border-top: 4px solid #e67e22;
+      background: linear-gradient(145deg, rgba(230, 126, 34, 0.05) 0%, rgba(255, 255, 255, 0.9) 100%);
+    }
+    
+    .card.attendance:hover {
+      border-color: #e67e22;
+      box-shadow: 0 20px 60px rgba(230, 126, 34, 0.3), 0 5px 15px rgba(230, 126, 34, 0.1);
+    }
+    
+    .card.reports {
+      border-top: 4px solid #d35400;
+      background: linear-gradient(145deg, rgba(211, 84, 0, 0.05) 0%, rgba(255, 255, 255, 0.9) 100%);
+    }
+    
+    .card.reports:hover {
+      border-color: #d35400;
+      box-shadow: 0 20px 60px rgba(211, 84, 0, 0.3), 0 5px 15px rgba(211, 84, 0, 0.1);
+    }
+
+    .card.admin {
+      border-top: 4px solid #c0392b;
+      background: linear-gradient(145deg, rgba(192, 57, 43, 0.05) 0%, rgba(255, 255, 255, 0.9) 100%);
+    }
+    
+    .card.admin:hover {
+      border-color: #c0392b;
+      box-shadow: 0 20px 60px rgba(192, 57, 43, 0.3), 0 5px 15px rgba(192, 57, 43, 0.1);
+    }
+    
+    .card-icon {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+    
+    .card h3 {
+      font-size: 1.3rem;
+      color: #d68910;
+      margin-bottom: 12px;
+      font-weight: 600;
+      text-shadow: 1px 1px 2px rgba(214, 137, 16, 0.1);
+    }
+    
+    .card p {
+      color: #f39c12;
+      line-height: 1.5;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+    
+    .card-button {
+      background: linear-gradient(135deg, #f1c40f 0%, #f39c12 50%, #e67e22 100%);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-shadow: 1px 1px 2px rgba(241, 196, 15, 0.3);
+      box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+    }
+    
+    .card-button:hover {
+      background: linear-gradient(135deg, #e6b800 0%, #e67e22 50%, #d35400 100%);
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(230, 184, 0, 0.4);
+    }
+    
+    .footer {
+      background: linear-gradient(135deg, rgba(255, 248, 220, 0.8) 0%, rgba(254, 240, 138, 0.9) 100%);
+      padding: 25px 30px;
+      text-align: center;
+      border-top: 2px solid rgba(241, 196, 15, 0.2);
+      position: relative;
+    }
+
+    /* Musical notes decoration in footer */
+    .footer::before {
+      content: '♪ ♫ ♪ ♬ ♫ ♪ ♫ ♬';
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.4rem;
+      color: rgba(241, 196, 15, 0.6);
+      letter-spacing: 2rem;
+      pointer-events: none;
+      text-shadow: 0 0 8px rgba(241, 196, 15, 0.4);
+      animation: footerNotesPulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes footerNotesPulse {
+      0% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      100% { opacity: 0.9; transform: translateX(-50%) scale(1.05); }
+    }
+    
+    .footer p {
+      color: #d68910;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    
+    .footer .version {
+      font-size: 0.9rem;
+      color: #f39c12;
+      opacity: 0.8;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      .header {
+        padding: 30px 20px;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .header p {
+        font-size: 1rem;
+      }
+      
+      .dashboard {
+        padding: 30px 20px;
+      }
+      
+      .dashboard-title h2 {
+        font-size: 1.6rem;
+      }
+      
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-top: 30px;
+      }
+      
+      .card {
+        padding: 25px 20px;
+      }
+      
+      .card-icon {
+        font-size: 3rem;
+      }
+      
+      .footer {
+        padding: 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header {
+        padding: 25px 15px;
+      }
+      
+      .logo {
+        max-width: 200px;
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .dashboard {
+        padding: 25px 15px;
+      }
+      
+      .card {
+        padding: 20px 15px;
+      }
+      
+      .card-icon {
+        font-size: 2.5rem;
+      }
+      
+      .card h3 {
+        font-size: 1.3rem;
+      }
+    }
+    
+    /* Loading animation */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .card:active {
+      animation: pulse 0.3s ease;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 248, 235, 0.5);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #e6b800 0%, #e67e22 100%);
+    }
+
+    /* Musical glow effect for cards */
+    .card:hover .card-icon {
+      animation: musicGlow 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes musicGlow {
+      0% { 
+        text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+        filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.3));
+      }
+      100% { 
+        text-shadow: 0 0 20px rgba(241, 196, 15, 0.8), 0 0 30px rgba(254, 240, 138, 0.6);
+        filter: drop-shadow(0 0 12px rgba(241, 196, 15, 0.5));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Header Section -->
+    <div class="header">
+      <img src="https://i.imgur.com/Mcs8sYw.png" class="logo" alt="Discover Music School Logo">
+      <h1>Discover Music School</h1>
+      <p>Student Management System</p>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="dashboard">
+      <div class="dashboard-title">
+        <h2>Welcome to Your Dashboard</h2>
+        <p>Select a form to get started with student management</p>
+      </div>
+
+      <div class="cards-grid">
+        <!-- Student Information Card -->
+        <div class="card student-info" onclick="navigateTo('student-info-form')">
+          <span class="card-icon">👤</span>
+          <h3>Student Information</h3>
+          <p>Register new students with personal details, emergency contacts, and consent forms.</p>
+          <button class="card-button">Open Form</button>
+        </div>
+
+        <!-- New Card Form Card -->
+        <div class="card new-card" onclick="navigateTo('new-card-form')">
+          <span class="card-icon">💳</span>
+          <h3>New Card Form</h3>
+          <p>Issue student cards with teacher assignments, instruments, and lesson tracking.</p>
+          <button class="card-button">Open Form</button>
+        </div>
+
+        <!-- Attendance Form Card -->
+        <div class="card attendance" onclick="navigateTo('attendance-form')">
+          <span class="card-icon">📋</span>
+          <h3>Student Attendance</h3>
+          <p>Record daily attendance, track lessons, and manage student participation.</p>
+          <button class="card-button">Open Form</button>
+        </div>
+
+        <!-- Reports Card -->
+        <div class="card reports" onclick="navigateTo('reports')">
+          <span class="card-icon">📊</span>
+          <h3>Reports Dashboard</h3>
+          <p>View analytics, generate reports, and track school performance metrics.</p>
+          <button class="card-button">Open Reports</button>
+        </div>
+
+        <!-- Admin Configuration Card -->
+        <div class="card admin" onclick="navigateTo('admin-config')">
+          <span class="card-icon">⚙️</span>
+          <h3>Admin Configuration</h3>
+          <p>Customize system settings, manage teachers, instruments, and business rules.</p>
+          <button class="card-button">Admin Panel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+      <p>&copy; 2025 Discover Music School. All rights reserved.</p>
+      <p class="version">Dashboard v1.0 | Student Management System</p>
+    </div>
+  </div>
+
+  <script>
+    // Robust navigation function with multiple backend method support
+    function navigateTo(page) {
+      console.log('Navigating to:', page);
+      
+      try {
+        // Method 1: Try include function (if available)
+        if (typeof google !== 'undefined' && google.script && google.script.run && google.script.run.include) {
+          console.log('Using include method for navigation');
+          google.script.run
+            .withSuccessHandler(function(html) {
+              console.log('Include method successful');
+              document.documentElement.innerHTML = html;
+            })
+            .withFailureHandler(function(error) {
+              console.log('Include method failed:', error);
+              // Fallback to Method 2
+              tryLoadHtmlMethod(page);
+            })
+            .include(page);
+          return;
+        }
+        
+        // Method 2: Try loadHtml function (if available)
+        if (typeof google !== 'undefined' && google.script && google.script.run && google.script.run.loadHtml) {
+          console.log('Using loadHtml method for navigation');
+          tryLoadHtmlMethod(page);
+          return;
+        }
+        
+        // Method 3: Direct window location (fallback)
+        console.log('Using window.location fallback for navigation');
+        window.location.href = page + '.html';
+        
+      } catch (error) {
+        console.error('Navigation error:', error);
+        // Final fallback
+        window.location.href = page + '.html';
+      }
+    }
+    
+    function tryLoadHtmlMethod(page) {
+      google.script.run
+        .withSuccessHandler(function(html) {
+          console.log('LoadHtml method successful');
+          document.documentElement.innerHTML = html;
+        })
+        .withFailureHandler(function(error) {
+          console.log('LoadHtml method failed:', error);
+          console.log('Using window.location as final fallback');
+          window.location.href = page + '.html';
+        })
+        .loadHtml(page);
+    }
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      switch(e.key) {
+        case '1':
+          navigateTo('student-info-form');
+          break;
+        case '2':
+          navigateTo('new-card-form');
+          break;
+        case '3':
+          navigateTo('attendance-form');
+          break;
+        case '4':
+          navigateTo('reports');
+          break;
+      }
+    });
+
+    // Add some interactive feedback
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-10px) scale(1.02)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    // Loading animation on page load
+    window.addEventListener('load', function() {
+      document.querySelectorAll('.card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+          card.style.transition = 'all 0.6s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 200);
+      });
+    });
+  </script>
+</body>
+</html>

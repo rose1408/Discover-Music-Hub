@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Test Page</title>
+</head>
+<body>
+    <h1>Function Test Page</h1>
+    <button onclick="testFunction()" id="testBtn">Click Me - Test Function</button>
+    <p id="result">Waiting for click...</p>
+    
+    <script>
+        console.log('🚀 Script loading...');
+        
+        function testFunction() {
+            console.log('✅ Test function called successfully!');
+            document.getElementById('result').innerHTML = '✅ SUCCESS: Function works!';
+            alert('Function is working!');
+        }
+        
+        // Test multiple assignment methods
+        window.testFunction = testFunction;
+        globalThis.testFunction = testFunction;
+        
+        console.log('✅ Script loaded successfully');
+        console.log('testFunction type:', typeof testFunction);
+        console.log('window.testFunction type:', typeof window.testFunction);
+        
+        // Verify after 1 second
+        setTimeout(() => {
+            console.log('=== 1 Second Later ===');
+            console.log('testFunction still available:', typeof testFunction);
+            console.log('Button element:', document.getElementById('testBtn'));
+        }, 1000);
+    </script>
+</body>
+</html>

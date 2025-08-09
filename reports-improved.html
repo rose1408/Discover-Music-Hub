@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Discover Music School - Reports Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 15px;
+      font-size: 0.95rem;
+    }
+    
+    .main-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      animation: slideIn 0.8s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      padding: 20px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    
+    .back-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    .logo {
+      max-width: 150px;
+      height: auto;
+      margin-bottom: 10px;
+      filter: brightness(1.2);
+    }
+    
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 400;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+    
+    .header p {
+      font-size: 1rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+    
+    /* Date Filter Section */
+    .filter-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .filter-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .filter-group label {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 0.95rem;
+    }
+    
+    .filter-group input[type="date"] {
+      padding: 8px 12px;
+      border: 2px solid #e1e8ed;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      background: white;
+      transition: all 0.3s ease;
+    }
+    
+    .filter-group input[type="date"]:focus {
+      outline: none;
+      border-color: #2c3e50;
+      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+    }
+    
+    .filter-btn {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .filter-btn:hover {
+      background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+    }
+    
+    /* Summary Cards */
+    .summary-section {
+      padding: 25px 20px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-top: 4px solid #3498db;
+      transition: all 0.3s ease;
+    }
+    
+    .summary-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .summary-card.students { border-top-color: #3498db; }
+    .summary-card.cards { border-top-color: #27ae60; }
+    .summary-card.tuition { border-top-color: #e74c3c; }
+    .summary-card.active { border-top-color: #f39c12; }
+    .summary-card.inactive { border-top-color: #95a5a6; }
+    .summary-card.promos { border-top-color: #9b59b6; }
+    .summary-card.instruments { border-top-color: #1abc9c; }
+    .summary-card.teachers { border-top-color: #34495e; }
+    
+    .summary-card h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #2c3e50;
+    }
+    
+    .summary-card p {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+      font-weight: 500;
+    }
+    
+    .summary-card .icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    /* Reports Section */
+    .reports-section {
+      padding: 25px 20px;
+    }
+    
+    .reports-nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+      background: #f8f9fa;
+      border: 2px solid #e1e8ed;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      color: #2c3e50;
+    }
+    
+    .tab-btn:hover {
+      background: #e9ecef;
+      border-color: #2c3e50;
+    }
+    
+    .tab-btn.active {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      border-color: #2c3e50;
+    }
+    
+    .report-content {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .report-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      font-size: 0.85rem;
+    }
+    
+    thead {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+    }
+    
+    th, td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    th {
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #fdfdfd;
+    }
+    
+    /* Status badges */
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    
+    .status-present { background: #d4edda; color: #155724; }
+    .status-forfeited { background: #f8d7da; color: #721c24; }
+    .status-closed { background: #fff3cd; color: #856404; }
+    .status-school-forfeited { background: #d1ecf1; color: #0c5460; }
+    
+    /* Loading and Empty States */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+    }
+    
+    .empty-state .icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+      opacity: 0.5;
+    }
+    
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+      font-size: 1.5rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      
+      .header {
+        padding: 15px;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .filter-section {
+        padding: 15px;
+      }
+      
+      .filter-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filter-group {
+        justify-content: space-between;
+      }
+      
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      
+      .reports-nav {
+        flex-direction: column;
+      }
+      
+      .tab-btn {
+        padding: 10px 15px;
+      }
+      
+      th, td {
+        padding: 8px 6px;
+        font-size: 0.8rem;
+      }
+      
+      th {
+        font-size: 0.75rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .summary-card {
+        padding: 15px;
+      }
+      
+      .summary-card h3 {
+        font-size: 1.8rem;
+      }
+      
+      th, td {
+        padding: 6px 4px;
+        font-size: 0.75rem;
+      }
+    }
+    
+    /* Export button */
+    .export-btn {
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+    }
+    
+    .export-btn:hover {
+      background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Header Section -->
+    <div class="header">
+      <button class="back-btn" onclick="ReportsApp.navigation.goToPage('index.html')">← Back to Main</button>
+      <img src="https://i.imgur.com/Mcs8sYw.png" class="logo" alt="Discover Music School Logo">
+      <h1>Reports Dashboard</h1>
+      <p>Student Management Analytics</p>
+    </div>
+
+    <!-- Date Filter Section -->
+    <div class="filter-section">
+      <div class="filter-container">
+        <div class="filter-group">
+          <label for="fromDate">From Date:</label>
+          <input type="date" id="fromDate" min="2024-01-01" max="2030-12-31">
+        </div>
+        <div class="filter-group">
+          <label for="toDate">To Date:</label>

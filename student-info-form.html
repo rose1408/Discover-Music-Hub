@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Student Information Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 12px;
+      background: linear-gradient(135deg, #fff9c4 0%, #f0f8e8 100%);
+      min-height: 100vh;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+      padding: 18px 12px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    
+    .back-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    .logo {
+      max-width: 160px;
+      height: auto;
+      margin-bottom: 8px;
+      filter: brightness(1.1);
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-section {
+      animation: fadeIn 0.6s ease;
+      padding: 20px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+    
+    .form-group {
+      position: relative;
+    }
+    
+    .radio-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .radio-group label:hover {
+      background: #e9ecef;
+    }
+    
+    .radio-group input[type="radio"] {
+      width: auto;
+      margin-right: 6px;
+    }
+    
+    /* Referral Source Styles */
+    .referral-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .referral-btn {
+      background: #f8f9fa;
+      border: 2px solid #e1e8ed;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      color: #2c3e50;
+      flex: 1;
+      min-width: 100px;
+    }
+    
+    .referral-btn:hover {
+      background: #e9ecef;
+      border-color: #3498db;
+      transform: translateY(-1px);
+    }
+    
+    .referral-btn.active {
+      background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+      color: white;
+      border-color: #3498db;
+      box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+    }
+    
+    .referral-details {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e1e8ed;
+      animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .referral-details label {
+      color: #2c3e50;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+    
+    .platform-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .platform-btn {
+      background: #f8f9fa;
+      border: 2px solid #e1e8ed;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      color: #2c3e50;
+      flex: 1;
+      min-width: 80px;
+    }
+    
+    .platform-btn:hover {
+      background: #e9ecef;
+      border-color: #3498db;
+      transform: translateY(-1px);
+    }
+    
+    .platform-btn.active {
+      background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+      color: white;
+      border-color: #3498db;
+      box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 1rem;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e1e8ed;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background-color: #fafbfc;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #3498db;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    input:valid {
+      border-color: #27ae60;
+    }
+    
+    button[type="submit"] {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    button[type="submit"]:hover:not(:disabled) {
+      background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    button[type="submit"]:active {
+      transform: translateY(0);
+    }
+    
+    button[type="submit"]:disabled {
+      background: #bdc3c7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Responsive Grid */
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      
+      .form-group.full-width {
+        grid-column: 1 / -1;
+      }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      animation: modalSlideIn 0.3s ease;
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    .modal-content p {
+      font-size: 1.05rem;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .modal-buttons button {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      min-width: 90px;
+    }
+    
+    .modal-buttons .confirm {
+      background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+      color: white;
+    }
+    
+    .modal-buttons .confirm:hover {
+      background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+      transform: translateY(-1px);
+    }
+    
+    .modal-buttons .cancel {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+    }
+    
+    .modal-buttons .cancel:hover {
+      background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+      transform: translateY(-1px);
+    }
+    
+    /* Message Styles */
+    .message-container {
+      padding: 0 25px 15px;
+    }
+    
+    #successInfoMessage, #errorMessage {
+      text-align: center;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 15px;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    #successInfoMessage {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      color: #155724;
+      border: 2px solid #c3e6cb;
+    }
+    
+    #errorMessage {
+      background: linear-gradient(135deg, #f8d7da 0%, #f1b0b7 100%);
+      color: #721c24;
+      border: 2px solid #f1b0b7;
+    }
+    
+    #formSpinner {
+      display: none;
+      text-align: center;
+      padding: 15px;
+      font-weight: 600;
+      color: #7f8c8d;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      margin: 15px 25px;
+    }
+    
+    /* Loading Animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 767px) {
+      body {
+        padding: 8px;
+      }
+      
+      .header {
+        padding: 15px 10px;
+      }
+      
+      .header h1 {
+        font-size: 1.3rem;
+      }
+      
+      .form-section {
+        padding: 20px;
+      }
+      
+      .message-container {
+        padding: 0 20px 12px;
+      }
+      
+      .radio-group {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .referral-buttons {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .referral-btn {
+        min-width: auto;
+      }
+      
+      .platform-buttons {
+        flex-direction: column;
+        gap: 6px;
+      }
+      
+      .platform-btn {
+        min-width: auto;
+      }
+    }
+    
+    /* Extra small screens */
+    @media (max-width: 480px) {
+      .form-section {
+        padding: 15px;
+      }
+      
+      input, select {
+        padding: 10px 12px;
+      }
+      
+      button[type="submit"] {
+        padding: 12px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header">
+      <button class="back-btn" onclick="goToPage('index')">← Back to Main</button>
+      <img src="https://i.imgur.com/Mcs8sYw.png" class="logo" alt="Discover Music School Logo">
+      <h1>Student Information</h1>
+    </div>
+
+    <!-- Spinner for feedback -->
+    <div id="formSpinner"><span class="spinner">⏳</span> Please wait...</div>
+
+    <!-- Student Info Form -->
+    <div class="form-section">
+      <form id="infoForm">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="fullName">Student's Full Name</label>
+            <input type="text" id="fullName" list="nameList" oninput="suggestNames()" required 
+                   placeholder="Last Name, First Name Middle Initial">
+            <datalist id="nameList"></datalist>
+          </div>
+          
+          <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" required onchange="calculateAge()">
+          </div>
+          
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" readonly placeholder="Auto-calculated">
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="emergencyContact">Emergency Contact Person</label>
+            <input type="text" id="emergencyContact" required 
+                   placeholder="Full name of emergency contact">
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" required 
+                   placeholder="example@email.com">
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Contact Number</label>
+            <input type="tel" id="phone" required 
+                   placeholder="09XX-XXX-XXXX">
+          </div>
+          
+          <div class="form-group full-width">
+            <label>Social Media Consent</label>
+            <div class="radio-group">
+              <label><input type="radio" name="socialMediaConsent" value="Yes" required> Yes</label>
+              <label><input type="radio" name="socialMediaConsent" value="No"> No</label>
+            </div>
+          </div>
+          
+          <div class="form-group full-width">
+            <label>How did you find us?</label>
+            <div class="referral-buttons">
+              <button type="button" class="referral-btn" data-source="Referred" onclick="selectReferralSource('Referred')">
+                👥 Referred
+              </button>
+              <button type="button" class="referral-btn" data-source="Social Media" onclick="selectReferralSource('Social Media')">
+                📱 Social Media
+              </button>
+              <button type="button" class="referral-btn" data-source="Walk-in" onclick="selectReferralSource('Walk-in')">
+                🚶 Walk-in
+              </button>
+            </div>
+            
+            <!-- Referred Details -->
+            <div id="referredDetails" class="referral-details" style="display: none;">
+              <label for="referredBy">By whom?</label>
+              <input type="text" id="referredBy" placeholder="Please specify who referred you">
+            </div>
+            
+            <!-- Social Media Details -->
+            <div id="socialMediaDetails" class="referral-details" style="display: none;">
+              <label>Which platform?</label>
+              <div class="platform-buttons">
+                <button type="button" class="platform-btn" data-platform="Facebook" onclick="selectPlatform('Facebook')">
+                  📘 Facebook
+                </button>
+                <button type="button" class="platform-btn" data-platform="Instagram" onclick="selectPlatform('Instagram')">
+                  📷 Instagram
+                </button>
+                <button type="button" class="platform-btn" data-platform="TikTok" onclick="selectPlatform('TikTok')">
+                  🎵 TikTok
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <button type="submit">
+          <span>Submit Information</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Messages -->
+    <div class="message-container">
+      <div id="successInfoMessage"></div>
+      <div id="errorMessage"></div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="infoConfirmModal" class="modal">
+    <div class="modal-content">
+      <p>👤 Confirm submission of student information?</p>
+      <div class="modal-buttons">
+        <button class="confirm">✅ Yes, Submit</button>
+        <button class="cancel">❌ Cancel</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  // Navigation function for Google Apps Script
+  function goToPage(page) {
+    console.log("Loading page:", page);
+    try {
+      // Try both common method names for Google Apps Script
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        // First try include method
+        if (google.script.run.include) {
+          google.script.run.withSuccessHandler(function(html) {
+            document.documentElement.innerHTML = html;
+          }).withFailureHandler(function(error) {
+            console.log('Include method failed:', error);
+            tryLoadHtml(page);
+          }).include(page);
+        } 
+        // Fallback to loadHtml method
+        else if (google.script.run.loadHtml) {
+          tryLoadHtml(page);
+        }
+        else {
+          console.log('No navigation method available');
+          alert('Navigation method not found. Please check backend setup.');
+        }
+      }
+    } catch (e) {
+      console.log('Navigation error:', e);
+      alert('Navigation failed: ' + e.message);
+    }
+  }
+
+  function tryLoadHtml(page) {
+    google.script.run.withSuccessHandler(function(html) {
+      document.documentElement.innerHTML = html;
+    }).withFailureHandler(function(error) {
+      console.log('LoadHtml method failed:', error);
+      alert('Navigation failed. Please try again.');
+    }).loadHtml(page);
+  }
+
+  let modalInUse = false;
+  let allStudentNames = [];
+  let selectedReferralSource = '';
+  let selectedReferralDetails = '';
+
+  function calculateAge() {
+    const dob = document.getElementById('dob').value;
+    if (dob) {
+      const birthDate = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      document.getElementById('age').value = age;
+    }
+  }
+
+  function selectReferralSource(source) {
+    selectedReferralSource = source;
+    selectedReferralDetails = '';
+    
+    // Update button states
+    document.querySelectorAll('.referral-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector(`[data-source="${source}"]`).classList.add('active');
+    
+    // Hide all detail sections first
+    document.getElementById('referredDetails').style.display = 'none';
+    document.getElementById('socialMediaDetails').style.display = 'none';
+    
+    // Clear inputs
+    document.getElementById('referredBy').value = '';
+    document.querySelectorAll('.platform-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    // Show appropriate detail section
+    if (source === 'Referred') {
+      document.getElementById('referredDetails').style.display = 'block';
+    } else if (source === 'Social Media') {
+      document.getElementById('socialMediaDetails').style.display = 'block';
+    } else if (source === 'Walk-in') {
+      selectedReferralDetails = 'Walk-in';
+    }
+  }
+
+  function selectPlatform(platform) {
+    selectedReferralDetails = platform;
+    
+    // Update button states
+    document.querySelectorAll('.platform-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector(`[data-platform="${platform}"]`).classList.add('active');
+  }
+
+  function handleInfoSubmit(e) {
+    e.preventDefault();
+    
+    // Validate referral source selection
+    if (!selectedReferralSource) {
+      document.getElementById("errorMessage").textContent = "❌ Please select how you found us.";
+      return;
+    }
+    
+    // Validate referral details for specific sources
+    if (selectedReferralSource === 'Referred') {
+      const referredBy = document.getElementById('referredBy').value.trim();
+      if (!referredBy) {
+        document.getElementById("errorMessage").textContent = "❌ Please specify who referred you.";
+        return;
+      }
+      selectedReferralDetails = referredBy;
+    } else if (selectedReferralSource === 'Social Media' && !selectedReferralDetails) {
+      document.getElementById("errorMessage").textContent = "❌ Please select which social media platform.";
+      return;
+    }
+    
+    showModal("infoConfirmModal", submitInfoForm);
+  }
+
+  function submitInfoForm() {
+    showSpinner(true);
+    const data = {
+      fullName: document.getElementById("fullName").value.trim(),
+      dob: document.getElementById("dob").value,
+      age: document.getElementById("age").value,
+      emergencyContact: document.getElementById("emergencyContact").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      socialMediaConsent: document.querySelector('input[name="socialMediaConsent"]:checked')?.value || "",
+      referralSource: selectedReferralSource,
+      referralDetails: selectedReferralDetails
+    };
+
+    google.script.run.withSuccessHandler(() => {
+      document.getElementById("infoForm").reset();
+      
+      // Reset referral selection
+      selectedReferralSource = '';
+      selectedReferralDetails = '';
+      document.querySelectorAll('.referral-btn, .platform-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById('referredDetails').style.display = 'none';
+      document.getElementById('socialMediaDetails').style.display = 'none';
+      
+      document.getElementById("successInfoMessage").textContent = "✅ Student Info Submitted!";
+      document.getElementById("errorMessage").textContent = "";
+      showSpinner(false);
+      google.script.run.withSuccessHandler(names => {
+        const datalist = document.getElementById("nameList");
+        datalist.innerHTML = '';
+        names.forEach(name => {
+          const option = document.createElement("option");
+          option.value = name;
+          datalist.appendChild(option);
+        });
+      }).getStudentNames();
+    }).withFailureHandler(err => {
+      document.getElementById("errorMessage").textContent = "❌ Failed to submit info.";
+      showSpinner(false);
+    }).submitForm(data);
+  }
+
+  // Load names once when the form loads
+  function loadStudentNames() {
+    google.script.run.withSuccessHandler(function(names) {
+      allStudentNames = names;
+    }).getAllStudentNames();
+  }
+
+  function suggestNames() {
+    const input = document.getElementById("fullName").value.toLowerCase();
+    const list = document.getElementById("nameList");
+    list.innerHTML = "";
+
+    if (!input) return;
+    const matches = allStudentNames.filter(name => name.toLowerCase().includes(input));
+    matches.forEach(name => {
+      const option = document.createElement("option");
+      option.value = name;
+      list.appendChild(option);
+    });
+  }
+
+  function showModal(modalId, confirmCallback) {
+    if (modalInUse) return;
+    modalInUse = true;
+    const modal = document.getElementById(modalId);
+    modal.style.display = "flex";
+    const confirmBtn = modal.querySelector(".confirm");
+    const cancelBtn = modal.querySelector(".cancel");
+
+    // Remove any previous click event by cloning the button
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+
+    newBtn.onclick = () => {
+      modal.style.display = "none";
+      modalInUse = false;
+      confirmCallback();
+    };
+    cancelBtn.onclick = () => {
+      modal.style.display = "none";
+      modalInUse = false;
+    };
+  }
+
+  function showSpinner(show) {
+    document.getElementById("formSpinner").style.display = show ? "block" : "none";
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    loadStudentNames();
+    document.getElementById("infoForm").addEventListener("submit", handleInfoSubmit);
+  });
+</script>
+</html>
